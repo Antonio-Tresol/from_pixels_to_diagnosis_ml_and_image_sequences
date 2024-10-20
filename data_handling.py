@@ -3,7 +3,7 @@ from pathlib import Path
 from PIL import Image
 import torch
 from transformers import VivitImageProcessor
-from datasets import Dataset
+from datasets import Dataset, load_from_disk
 
 
 def read_image_sequence(patient_path: str, indices: list[int]) -> np.ndarray:
@@ -112,7 +112,11 @@ def create_vivit_dataset(
     directory: str,
     test_size: float,
     seed: int,
+    save_dataset: bool,
+    dataset_name: str,
 ) -> Dataset:
+    if not save_dataset:
+        return load_from_disk(dataset_name).train_test_split(test_size=test_size)
     dictionary, _ = create_dataset_dictionary(directory)
     dataset = Dataset.from_list(dictionary)
     dataset = dataset.class_encode_column("labels")
@@ -123,4 +127,5 @@ def create_vivit_dataset(
         lambda x: {"pixel_values": torch.tensor(x["pixel_values"]).squeeze()},
         batched=False,
     )
+    shuffled_dataset.save_to_disk(dataset_name)
     return shuffled_dataset.train_test_split(test_size=test_size)
