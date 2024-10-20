@@ -9,7 +9,7 @@ eval_metrics = evaluate.combine(["accuracy", "precision", "recall"])
 
 def compute_metrics(p) -> dict:
     preds = np.argmax(p.predictions, axis=1)
-    labels = p.labels_ids
+    labels = p.label_ids
     return eval_metrics.compute(predictions=preds, references=labels)
 
 

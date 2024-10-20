@@ -5,18 +5,22 @@ from transformers import Trainer, TrainingArguments
 import wandb
 import config
 from key import WANDB_KEY
+import random
 
 
 def main() -> None:
     device = config.DEVICE
     train_dataset = dh.create_vivit_dataset(
-        directory=config.DATASET_DIR, test_size=config.TEST_SIZE, seed=config.SEED,
+        directory=config.DATASET_DIR,
+        test_size=config.TEST_SIZE,
+        seed=config.SEED,
+        save_dataset=False,
+        dataset_name="saved_dataset_mini",
     )
     vivit = initialize_vivit(train_dataset, device, config.MODEL_NAME)
 
-    training_output_dir = config.TRAINING_DIR
     training_args = TrainingArguments(
-        output_dir=training_output_dir,
+        output_dir=config.TRAINING_DIR,
         num_train_epochs=config.EPOCHS,
         per_device_train_batch_size=config.TRAIN_BATCH,
         per_device_eval_batch_size=config.EVAL_BATCH,
@@ -32,15 +36,11 @@ def main() -> None:
         lr_scheduler_type=config.SCHEDULER,
         fp16=config.SMALL_FLOATING_POINT,
         report_to=config.LOGGER,
+        run_name=config.RUN_NAME,
     )
 
     wandb_key = WANDB_KEY
     wandb.login(key=wandb_key)
-
-    wandb.init(
-        project=config.PROJECT,
-        tags=[config.RUN_NAME],
-    )
 
     optimizer = torch.optim.AdamW(
         vivit.parameters(),
@@ -48,7 +48,7 @@ def main() -> None:
         betas=config.BETAS,
         eps=config.EPSILON,
     )
-    # Define the trainer
+
     trainer = Trainer(
         model=vivit,
         args=training_args,
@@ -57,11 +57,16 @@ def main() -> None:
         optimizers=(optimizer, None),
         compute_metrics=compute_metrics,
     )
-    with wandb.init(project=config.PROJECT, job_type="train", tags=[config.RUN_NAME]):
+    with wandb.init(
+        project=config.PROJECT,
+        job_type="train",
+        tags=[config.RUN_NAME],
+        id=config.RUN_NAME,
+    ):
         train_results = trainer.train()
         trainer.save_model("model")
-        trainer.log_metrics("train", train_results.metrics)
-        trainer.save_metrics("train", train_results.metrics)
+        trainer.log_metrics("train", train_results)
+        trainer.save_metrics("train", train_results)
         trainer.save_state()
         eval_results = trainer.evaluate()
         trainer.log_metrics("eval", eval_results)
