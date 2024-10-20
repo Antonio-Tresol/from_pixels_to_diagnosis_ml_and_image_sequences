@@ -65,8 +65,8 @@ def main() -> None:
     ):
         train_results = trainer.train()
         trainer.save_model("model")
-        trainer.log_metrics("train", train_results)
-        trainer.save_metrics("train", train_results)
+        trainer.log_metrics("train", train_results.metrics)
+        trainer.save_metrics("train", train_results.metrics)
         trainer.save_state()
         eval_results = trainer.evaluate()
         trainer.log_metrics("eval", eval_results)
