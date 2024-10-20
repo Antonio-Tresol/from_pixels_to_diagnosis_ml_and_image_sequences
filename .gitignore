@@ -1,1 +1,5 @@
 dataset/*
+dataset_mini/*
+env.yml
+wandb/*
+key.py
