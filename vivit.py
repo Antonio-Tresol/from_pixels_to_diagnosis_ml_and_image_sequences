@@ -3,6 +3,8 @@ from datasets import Dataset
 from transformers import VivitConfig, VivitForVideoClassification
 import torch
 import evaluate
+from torchvision import transforms
+
 
 eval_metrics = evaluate.combine(["accuracy", "precision", "recall"])
 
@@ -41,3 +43,16 @@ def initialize_vivit(
         ignore_mismatched_sizes=True,
         config=config,
     ).to(device)
+
+
+def get_vivit_transformation() -> transforms.Compose:
+    return transforms.Compose(
+        [
+            transforms.Resize(256),
+            transforms.CenterCrop(224),
+            transforms.ToTensor(torch.float),
+            transforms.Normalize(
+                mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225]
+            ),
+        ],
+    )
