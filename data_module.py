@@ -74,8 +74,8 @@ class ImageSequenceDataModule(LightningDataModule):
             dataset (str): Name of the dataset.
             root_dir (str): Root directory of the dataset.
             batch_size (int): Batch size for data loaders.
-            train_folder_dataset (Dataset): Dataset class to use for training.
-            test_folder_dataset (Dataset): Dataset class to use for testing.
+            train_base_dataset (Dataset): Dataset class to use for training.
+            test_base_dataset (Dataset): Dataset class to use for testing.
             train_size (float, optional): Fraction of data to use as training set.
               Default is 0.5.
             test_size (float, optional): Fraction of data to use as test set.
@@ -214,15 +214,19 @@ class ImageSequenceDataModule(LightningDataModule):
 def testing() -> None:
     from pl_vivit import get_vivit_transformations
 
+    import config
+
     train_transform = test_transform = get_vivit_transformations()
 
     train_dataset = ImageSequenceClassificationDataset(
         root_dir="dataset",
         transform=train_transform,
+        device=config.DEVICE,
     )
     test_dataset = ImageSequenceClassificationDataset(
         root_dir="dataset",
         transform=test_transform,
+        device=config.DEVICE,
     )
 
     vivit_dm = ImageSequenceDataModule(

@@ -16,6 +16,7 @@ EVAL_BATCH = 2
 WEIGHT_DECAY = 0.01
 TRAINING_DIR = "/tmp/results"
 
+NUM_FRAMES = 18
 # Optimizarion algorithm constants
 OPTIMIZATION_ALGORITHM = "adamw_torch"
 LEARNING_RATE = 0.000005

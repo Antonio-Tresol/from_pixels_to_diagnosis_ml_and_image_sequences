@@ -9,13 +9,13 @@ from data_tools.sampling import sample_patient_images
 from pathlib import Path
 
 
-def read_image_sequence(patient_path: str, indices: list[int]) -> torch.Tensor:
+def read_image_sequence(patient_path: str, indices: list[int], device:str) -> torch.Tensor:
     images = []
     for index in indices:
         image_path = f"{patient_path}/{index}.jpg"
-        image = read_image(image_path, ImageReadMode.RGB)
+        image = read_image(image_path, ImageReadMode.RGB).to(device)
         images.append(image)
-    return torch.stack(images)
+    return torch.stack(images).to(device)
 
 
 def get_all_images(root_dir: Path) -> list:
@@ -30,6 +30,7 @@ def retrieve_image_sequence(
     directory: str,
     patient_dir: str,
     patient_label: str,
+    device: str,
 ) -> torch.Tensor:
     patient_path = f"{directory}/{patient_label}s/{patient_dir}"
     indices = sample_patient_images(
@@ -42,4 +43,5 @@ def retrieve_image_sequence(
     return read_image_sequence(
         patient_path=patient_path,
         indices=indices,
+        device=device,
     )

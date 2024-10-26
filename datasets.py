@@ -54,6 +54,7 @@ class ImageSequenceClassificationDataset(Dataset):
     def __init__(
         self,
         root_dir: str,
+        device: str,
         transform: Optional[torch.nn.Module] = None,
     ) -> None:
         """Initialize the ImageFolderDataset.
@@ -61,13 +62,14 @@ class ImageSequenceClassificationDataset(Dataset):
         Args:
         ----
             root_dir (str): The root directory containing image folders.
+            device (str): the device to place the tensors
             transform (optional): An optional transform to be applied to the images.
 
         """
         super().__init__()
         self.root_dir = root_dir
         self.transform = transform
-
+        self.device = device
         # Build lists of images, labels, and class counts
         self.image_sequences, self.labels, self.class_counts, self.classes = (
             ImageSequenceListBuilder.build_list(root_dir=self.root_dir)
@@ -99,17 +101,11 @@ class ImageSequenceClassificationDataset(Dataset):
             self.root_dir,
             self.image_sequences[idx],
             self.classes[self.labels[idx]],
+            device=self.device,
         )
         label = self.labels[idx]
         if self.transform:
-            image_sequence = self.transform(image_sequence)
-        print(
-            (
-                f"patient {self.image_sequences[idx]} is "
-                f"{self.classes[self.labels[idx]]} image sequence shape is "
-                f"{image_sequence.shape}"
-            ),
-        )
+            image_sequence = self.transform(image_sequence).to(self.device)
         return image_sequence, label
 
     def __str__(self) -> str:
@@ -131,10 +127,12 @@ class ImageSequenceClassificationDataset(Dataset):
 
 def testing() -> None:
     from pl_vivit import get_vivit_transformations
+    import config
 
     a = ImageSequenceClassificationDataset(
         "dataset",
         transform=get_vivit_transformations(),
+        device=config.DEVICE,
     )
     print(a)
 
