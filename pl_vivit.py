@@ -2,7 +2,7 @@ from torchvision import transforms
 import torch
 
 
-def get_vivit_transformation() -> transforms.Compose:
+def get_vivit_transformations() -> transforms.Compose:
     return transforms.Compose(
         [
             transforms.Resize(256),

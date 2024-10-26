@@ -52,14 +52,14 @@ class DataLoaderCreator:
         )
 
 
-class ImageSequencesDataModule(LightningDataModule):
+class ImageSequenceDataModule(LightningDataModule):
     def __init__(
         self,
         dataset: str,
         root_dir: str,
         batch_size: int,
-        train_folder_dataset: ImageSequenceClassificationDataset,
-        test_folder_dataset: ImageSequenceClassificationDataset,
+        train_base_dataset: ImageSequenceClassificationDataset,
+        test_base_dataset: ImageSequenceClassificationDataset,
         train_size: float = 0.5,
         test_size: float = 0.5,
         use_index: bool = True,
@@ -100,29 +100,30 @@ class ImageSequencesDataModule(LightningDataModule):
         self.sampling = sampling
 
         # Initialize training and test folders
-        self.train_folder = train_folder_dataset
-        self.test_folder = test_folder_dataset
+        self.train_base_dataset = train_base_dataset
+        self.test_base_dataset = test_base_dataset
 
-        self.class_counts = self.train_folder.class_counts
-        self.classes = self.train_folder.classes
+        self.class_counts = self.train_base_dataset.class_counts
+        self.classes = self.train_base_dataset.classes
         self.indices_path = Path(indices_dir) / f"{dataset}.pkl"
         self.preset_indices = preset_indices
+        self.prepare_data()
+        self.create_data_loaders()
 
     def prepare_data(self) -> None:
         """Prepare data for training and testing."""
         # Split train and test indices
         self.train_indices, self.test_indices = DataSplitter.split_data(
-            self.train_folder,
+            self.train_base_dataset,
             self.indices_path,
             self.train_size,
             self.test_size,
             self.use_index,
-            self.preset_indices,
         )
         # Split the datasets
-        self.train_dataset = Subset(self.train_folder, self.train_indices)
-        self.test_dataset = Subset(self.test_folder, self.test_indices)
-        train_labels = np.array(self.train_folder.labels)[self.train_indices]
+        self.train_dataset = Subset(self.train_base_dataset, self.train_indices)
+        self.test_dataset = Subset(self.test_base_dataset, self.test_indices)
+        train_labels = np.array(self.train_base_dataset.labels)[self.train_indices]
         # Create a sampler (if needed)
         self.train_sampler = SamplerFactory.create_sampler(
             self.sampling,
@@ -177,3 +178,67 @@ class ImageSequencesDataModule(LightningDataModule):
 
         """
         return self.test_loader
+
+    def __str__(self) -> str:
+        """Return a string representation of the ImageSequenceDataModule.
+
+        Returns
+        -------
+            str: A string representation of the ImageSequenceDataModule.
+
+        """
+        train_sample = self.train_dataset[0]
+        test_sample = self.train_dataset[0]
+        train_data_shape = train_sample[0].shape
+        test_data_shape = test_sample[0].shape
+
+        return (
+            f"ImageSequenceDataModule\n-dataset={self.hparams.dataset},\n "
+            f"-root_dir={self.root_dir}, \n"
+            f"-batch_size={self.batch_size}, \n"
+            f"-train_size={self.train_size}, \n"
+            f"-test_size={self.test_size}, \n"
+            f"-use_index={self.use_index}, \n"
+            f"-indices_dir={self.indices_path}, \n"
+            f"-preset_indices={self.preset_indices}, \n"
+            f"-sampling={self.sampling}, \n"
+            f"-class_counts={self.class_counts}, \n"
+            f"-classes={self.classes}), \n"
+            f"-- train_data_shape={train_data_shape}, \n"
+            f"-- num_train_samples={len(self.train_dataset)}, \n"
+            f"-- test_data_shape={test_data_shape}, \n"
+            f"-- num_test_samples={len(self.test_dataset)})\n"
+        )
+
+
+def testing() -> None:
+    from pl_vivit import get_vivit_transformations
+
+    train_transform = test_transform = get_vivit_transformations()
+
+    train_dataset = ImageSequenceClassificationDataset(
+        root_dir="dataset",
+        transform=train_transform,
+    )
+    test_dataset = ImageSequenceClassificationDataset(
+        root_dir="dataset",
+        transform=test_transform,
+    )
+
+    vivit_dm = ImageSequenceDataModule(
+        dataset="testing",
+        root_dir="dataset",
+        batch_size=4,
+        train_base_dataset=train_dataset,
+        test_base_dataset=test_dataset,
+        train_size=0.80,
+        test_size=0.20,
+        use_index=True,
+        indices_dir="indices",
+        sampling=Sampling.NONE,
+    )
+    print(vivit_dm)
+
+
+if __name__ == "__main__":
+    testing()

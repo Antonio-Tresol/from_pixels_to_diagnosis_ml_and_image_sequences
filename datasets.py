@@ -121,20 +121,20 @@ class ImageSequenceClassificationDataset(Dataset):
 
         """
         return (
-            f"ImageClassificationFolderDataset\n- root_dir={self.root_dir},\n"
-            f"- num_patients={len(self.image_sequences)}, \n"
-            f"- class_counts={self.class_counts}, \n"
-            f"- classes={self.classes}),\n"
-            f"- patiens={self.image_sequences}"
+            f"-> ImageClassificationFolderDataset\n- root_dir={self.root_dir},\n"
+            f"-- num_patients={len(self.image_sequences)}, \n"
+            f"-- class_counts={self.class_counts}, \n"
+            f"-- classes={self.classes}),\n"
+            f"-- patients={self.image_sequences}"
         )
 
 
 def testing() -> None:
-    from pl_vivit import get_vivit_transformation
+    from pl_vivit import get_vivit_transformations
 
     a = ImageSequenceClassificationDataset(
         "dataset",
-        transform=get_vivit_transformation(),
+        transform=get_vivit_transformations(),
     )
     print(a)
 
