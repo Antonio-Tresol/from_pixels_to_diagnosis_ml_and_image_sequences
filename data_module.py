@@ -47,7 +47,7 @@ class DataLoaderCreator:
             sampler=sampler,
             shuffle=shuffle,
             num_workers=num_workers,
-            pin_memory=True,
+            pin_memory=False,
             persistent_workers=True,
         )
 
@@ -64,7 +64,6 @@ class ImageSequenceDataModule(LightningDataModule):
         test_size: float = 0.5,
         use_index: bool = True,
         indices_dir: Optional[str] = None,
-        preset_indices: Optional[list[int]] = None,
         sampling: Sampling = Sampling.NONE,
     ) -> None:
         """Initialize the ImageDataModule.
@@ -106,7 +105,6 @@ class ImageSequenceDataModule(LightningDataModule):
         self.class_counts = self.train_base_dataset.class_counts
         self.classes = self.train_base_dataset.classes
         self.indices_path = Path(indices_dir) / f"{dataset}.pkl"
-        self.preset_indices = preset_indices
         self.prepare_data()
         self.create_data_loaders()
 
@@ -200,7 +198,6 @@ class ImageSequenceDataModule(LightningDataModule):
             f"-test_size={self.test_size}, \n"
             f"-use_index={self.use_index}, \n"
             f"-indices_dir={self.indices_path}, \n"
-            f"-preset_indices={self.preset_indices}, \n"
             f"-sampling={self.sampling}, \n"
             f"-class_counts={self.class_counts}, \n"
             f"-classes={self.classes}), \n"

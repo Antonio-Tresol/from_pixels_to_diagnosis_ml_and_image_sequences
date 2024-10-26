@@ -1,5 +1,6 @@
 import torch
 import random
+
 # Project constants
 PROJECT = "cs_research"
 MODEL_NAME = "google/vivit-b-16x2-kinetics400"
@@ -7,7 +8,7 @@ RUN_NAME = f"vivit_dummy_run_{random.randint(0, 9999)}"
 DEVICE = "cuda" if torch.cuda.is_available() else "cpu"
 
 # General constants
-DATASET_DIR = "dataset_mini"
+DATASET_DIR = "dataset"
 TEST_SIZE = 0.3
 SEED = 42
 EPOCHS = 20
@@ -34,3 +35,45 @@ EVAL_STEPS = 10
 WARMUP_STEPS = int(0.1 * 20)
 SCHEDULER = "linear"
 SMALL_FLOATING_POINT = True
+
+
+LR = 0.0001
+SCHEDULER_MAX_IT = 30
+WEIGH_DECAY = 1e-4
+EPSILON = 1e-4
+
+# train loop
+BATCH_SIZE = 64
+EPOCHS = 15
+USE_INDEX = True
+# callback
+PATIENCE = 15
+TOP_K_SAVES = 1
+# training loop
+NUM_TRIALS = 1
+
+# mlp
+MLP_HIDDEN_DIM = 64
+MLP_HIDDEN_LAYERS = 3
+MLP_INPUT_SIZE = 512
+
+# train test
+TRAIN_SIZE_80_20 = 0.8
+TEST_SIZE_80_20 = 1 - TRAIN_SIZE_80_20
+TRAIN_SIZE_80_10_10 = (0.1 * 1) / TEST_SIZE_80_20
+TEST_SIZE_80_10_10 = 1 - TRAIN_SIZE_80_10_10
+
+TRAIN_SIZE_50_50 = 0.5
+TEST_SIZE_50_50 = 1 - TRAIN_SIZE_50_50
+TRAIN_SIZE_50_35_15 = (0.35 * 1) / TEST_SIZE_50_50
+TEST_SIZE_50_35_15 = 1 - TRAIN_SIZE_50_35_15
+
+INDICES_DIR = "indices/"
+CHECKPOINTS_DIR = "checkpoints/"
+METRICS_DIR = "metrics/"
+WANDB_PROJECT = PROJECT
+
+VIVIT_DIR = CHECKPOINTS_DIR + "vivit/"
+VIVIT_FILENAME = "vivit_"
+
+CLASS_NAMES = ["Negative", "Positive"]
