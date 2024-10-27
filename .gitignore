@@ -1,1 +1,9 @@
 dataset/*
+dataset_mini/*
+env.yml
+wandb/*
+key.py
+model
+__pycache__/*
+saved_dataset_mini/*
+saved_dataset/*
