@@ -19,8 +19,8 @@ def get_patients_from_dataset(directory: str) -> list:
     negative_patients = get_all_patients(Path(f"{directory}/Negatives/"))
     positive_patients = get_all_patients(Path(f"{directory}/Positives/"))
     # labels
-    negative_labels = [0] * len(negative_patients)
-    positive_labels = [1] * len(positive_patients)
+    negative_labels = [0 for _ in negative_patients]
+    positive_labels = [1 for _ in positive_patients]
 
     patients = positive_patients + negative_patients
     labels = positive_labels + negative_labels
@@ -57,15 +57,6 @@ class ImageSequenceClassificationDataset(Dataset):
         device: str,
         transform: Optional[torch.nn.Module] = None,
     ) -> None:
-        """Initialize the ImageFolderDataset.
-
-        Args:
-        ----
-            root_dir (str): The root directory containing image folders.
-            device (str): the device to place the tensors
-            transform (optional): An optional transform to be applied to the images.
-
-        """
         super().__init__()
         self.root_dir = root_dir
         self.transform = transform

@@ -18,7 +18,6 @@ def get_vivit_config(
     config.label2id = {c: str(i) for i, c in enumerate(labels)}
     config.num_frames = num_frames
     config.video_size = [18, 224, 224]
-    config.return_dict = False
     return config
 
 
@@ -34,8 +33,10 @@ class ViViT(nn.Module):
             ),
         ).to(device)
 
-    def forward(self, x) -> torch.Tensor:
-        return self.vivit.forward(pixel_values=x)
+    def forward(self, x, labels=None) -> torch.Tensor:
+        if labels is None:
+            return self.vivit.forward(pixel_values=x)
+        return self.vivit.forward(pixel_values=x, labels=labels)
 
 
 def get_vivit_transformations() -> transforms.Compose:
@@ -84,7 +85,22 @@ def testing() -> None:
         sampling=Sampling.NONE,
     )
     vivit = ViViT(2, config.DEVICE)
-    print(vivit(train_dataset[0][0].unsqueeze(0)))
+    x = train_dataset[0][0].unsqueeze(0)
+    y = train_dataset[0][1]
+    y = (
+        torch.Tensor([1, 0])
+        if y == torch.Tensor(1).to(config.DEVICE)
+        else torch.Tensor([0, 1])
+    )
+    y.to(config.DEVICE)
+    print("x:", x.shape, "\n y ", y.shape)
+    ouput = vivit(x)
+    from torch.nn import CrossEntropyLoss
+    loss_fct = CrossEntropyLoss()
+    y_hat = ouput.logits
+    print("y_hat:", y_hat.shape, "\n y ", y.shape)
+    loss = loss_fct(y_hat, y.unsqueeze(0).to(config.DEVICE))
+    print(loss)
 
 
 if __name__ == "__main__":

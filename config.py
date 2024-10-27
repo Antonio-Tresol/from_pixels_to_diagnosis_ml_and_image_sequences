@@ -8,8 +8,9 @@ RUN_NAME = f"vivit_dummy_run_{random.randint(0, 9999)}"
 DEVICE = "cuda" if torch.cuda.is_available() else "cpu"
 
 # General constants
-DATASET_DIR = "dataset"
+DATASET_DIR = "dataset_mini"
 TEST_SIZE = 0.3
+TRAIN_SIZE = 1 - TEST_SIZE
 SEED = 42
 EPOCHS = 20
 TRAIN_BATCH = 2
@@ -43,30 +44,13 @@ WEIGH_DECAY = 1e-4
 EPSILON = 1e-4
 
 # train loop
-BATCH_SIZE = 64
-EPOCHS = 15
-USE_INDEX = True
+BATCH_SIZE = 2
+USE_INDEX = False
 # callback
 PATIENCE = 15
 TOP_K_SAVES = 1
 # training loop
 NUM_TRIALS = 1
-
-# mlp
-MLP_HIDDEN_DIM = 64
-MLP_HIDDEN_LAYERS = 3
-MLP_INPUT_SIZE = 512
-
-# train test
-TRAIN_SIZE_80_20 = 0.8
-TEST_SIZE_80_20 = 1 - TRAIN_SIZE_80_20
-TRAIN_SIZE_80_10_10 = (0.1 * 1) / TEST_SIZE_80_20
-TEST_SIZE_80_10_10 = 1 - TRAIN_SIZE_80_10_10
-
-TRAIN_SIZE_50_50 = 0.5
-TEST_SIZE_50_50 = 1 - TRAIN_SIZE_50_50
-TRAIN_SIZE_50_35_15 = (0.35 * 1) / TEST_SIZE_50_50
-TEST_SIZE_50_35_15 = 1 - TRAIN_SIZE_50_35_15
 
 INDICES_DIR = "indices/"
 CHECKPOINTS_DIR = "checkpoints/"

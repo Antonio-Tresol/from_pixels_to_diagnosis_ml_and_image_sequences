@@ -1,6 +1,7 @@
 from abc import ABC, abstractmethod
 from pytorch_lightning import LightningModule
 
+
 class BaseMetricsManager:
     def __init__(self, module: LightningModule) -> None:
         """Initialize the base metrics manager
@@ -39,7 +40,7 @@ class MetricsManager(BaseMetricsManager):
             module: The Lightning module that the metrics manager belongs to.
             metrics: A dictionary of metrics to track.
         """
-        super(MetricsManager, self).__init__(module)
+        super().__init__(module)
         self.metrics = metrics
 
     def update_metrics(self, y_true, y_pred):
@@ -68,7 +69,7 @@ class MetricsManagerCollection(BaseMetricsManager):
             module: The Lightning module that the metrics manager collection belongs to.
             metrics: A dictionary of metrics to track.
         """
-        super(MetricsManagerCollection, self).__init__(module)
+        super().__init__(module)
         self.metric_managers = managers
 
     def update_metrics(self, y_true, y_pred):

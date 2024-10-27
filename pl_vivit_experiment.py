@@ -10,15 +10,16 @@ from datasets import ImageSequenceClassificationDataset
 from data_module import ImageSequenceDataModule
 from data_tools.sampling import Sampling
 from torchmetrics.classification import (
-    MulticlassAccuracy,
-    MulticlassPrecision,
-    MulticlassRecall,
+    BinaryAccuracy,
+    BinaryPrecision,
+    BinaryRecall,
 )
 from torchmetrics import MetricCollection
 from pl_vivit import ViViT, get_vivit_transformations
 from torch import nn
 import wandb
 import config
+import gc
 
 
 def main() -> None:
@@ -27,19 +28,11 @@ def main() -> None:
 
     metrics = MetricCollection(
         {
-            "Accuracy": MulticlassAccuracy(num_classes=class_count, average="micro"),
-            "Precision": MulticlassPrecision(num_classes=class_count),
-            "Recall": MulticlassRecall(num_classes=class_count),
+            "Accuracy": BinaryAccuracy(),
+            "Precision": BinaryPrecision(),
+            "Recall": BinaryRecall(),
         },
     )
-    vector_metrics = MetricCollection(
-        {
-            "Accuracy": MulticlassAccuracy(num_classes=class_count, average=None),
-            "Precision": MulticlassPrecision(num_classes=class_count, average=None),
-            "Recall": MulticlassRecall(num_classes=class_count, average=None),
-        },
-    )
-
     train_transform = test_transform = get_vivit_transformations()
 
     train_dataset = ImageSequenceClassificationDataset(
@@ -59,8 +52,8 @@ def main() -> None:
         batch_size=config.BATCH_SIZE,
         train_base_dataset=train_dataset,
         test_base_dataset=test_dataset,
-        train_size=config.TRAIN_SIZE_80_20,
-        test_size=config.TEST_SIZE_80_20,
+        train_size=config.TRAIN_SIZE,
+        test_size=config.TEST_SIZE,
         use_index=config.USE_INDEX,
         indices_dir=config.INDICES_DIR,
         sampling=Sampling.NONE,
@@ -74,7 +67,6 @@ def main() -> None:
         metrics=metrics,
         lr=config.LR,
         scheduler_max_it=config.SCHEDULER_MAX_IT,
-        per_class_metrics=vector_metrics,
         class_names=config.CLASS_NAMES,
     )
 
@@ -94,9 +86,7 @@ def main() -> None:
         mode="min",
     )
 
-    wandb_id = (
-        config.VIVIT_FILENAME + wandb.util.generate_id()
-    )
+    wandb_id = config.VIVIT_FILENAME + wandb.util.generate_id()
     wandb_logger = WandbLogger(
         project=config.WANDB_PROJECT,
         id=wandb_id,
@@ -109,7 +99,8 @@ def main() -> None:
         max_epochs=config.EPOCHS,
         log_every_n_steps=1,
     )
-
+    torch.cuda.empty_cache()
+    gc.collect()
     trainer.fit(model, datamodule=patient_dm)
     trainer.test(model, datamodule=patient_dm)
 
