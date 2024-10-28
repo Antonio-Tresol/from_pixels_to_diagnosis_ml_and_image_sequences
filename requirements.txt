@@ -1,0 +1,9 @@
+conda-forge::datasets
+conda-forge::pandas
+conda-forge::transformers
+conda-forge::evaluate
+conda-forge::wandb
+
+
+pytorch::pytorch
+pytorch::torchvision

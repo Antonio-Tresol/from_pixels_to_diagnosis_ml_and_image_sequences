@@ -2,7 +2,7 @@ import numpy as np
 from pathlib import Path
 from PIL import Image
 import torch
-from transformers import VivitImageProcessor
+from transformers import VivitImageProcessor, ConvNextImageProcessor
 from datasets import Dataset, load_from_disk
 
 
@@ -101,6 +101,15 @@ image_processor = VivitImageProcessor.from_pretrained(
     "google/vivit-b-16x2-kinetics400",
 )
 
+convnext_image_processor = ConvNextImageProcessor.from_pretrained(
+    "facebook/convnext-tiny-224"
+)
+
+def process_convnext_sequence(example: dict) -> dict:
+    inputs = convnext_image_processor(list(np.array(example["video"])), return_tensors="pt")
+    inputs["labels"] = example["labels"]
+    return inputs
+
 
 def process_vivit_sequence(example: dict) -> dict:
     inputs = image_processor(list(np.array(example["video"])), return_tensors="pt")
@@ -129,3 +138,17 @@ def create_vivit_dataset(
     )
     shuffled_dataset.save_to_disk(dataset_name)
     return shuffled_dataset.train_test_split(test_size=test_size)
+
+def create_convnext_dataset(
+        directory: str,
+        test_size: float,
+        seed: int,
+        save_dataset: bool,
+        dataset_name: str,
+) -> Dataset:
+    if not save_dataset:
+        return load_from_disk(dataset_name).train_test_split(test_size=test_size)
+    dictionary, _ = create_dataset_dictionary(directory)
+    dataset = Dataset.from_list(dictionary)
+    dataset = dataset.class_encode_column("labels")
+    processed_dataset = dataset.map(process_convnext_sequence, batched=False)
