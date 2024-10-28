@@ -1,11 +1,13 @@
 import torch
 import random
+
 # Project constants
 PROJECT = "cs_research"
 MODEL_NAME = "google/vivit-b-16x2-kinetics400"
 CONVNEXT_MODEL_NAME = "facebook/convnext-tiny-224"
 RUN_NAME_CONVNEXT = f"convnext_dummy_run_{random.randint(0, 9999)}"
 RUN_NAME = f"vivit_run_{random.randint(0, 9999)}"
+RUN_NAME_CONVNEXT = f"convnext_dummy_run_{random.randint(0, 9999)}"
 DEVICE = "cuda" if torch.cuda.is_available() else "cpu"
 
 # General constants
