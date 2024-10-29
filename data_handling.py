@@ -5,6 +5,8 @@ import torch
 from transformers import VivitImageProcessor, ConvNextImageProcessor
 from datasets import Dataset, load_from_disk
 
+import config
+
 
 def read_image_sequence(patient_path: str, indices: list[int]) -> np.ndarray:
     images = []
@@ -102,7 +104,7 @@ image_processor = VivitImageProcessor.from_pretrained(
 )
 
 convnext_image_processor = ConvNextImageProcessor.from_pretrained(
-    "facebook/convnext-tiny-224"
+    config.CONVNEXT_MODEL_NAME,
 )
 
 def process_convnext_sequence(example: dict) -> dict:
@@ -147,8 +149,18 @@ def create_convnext_dataset(
         dataset_name: str,
 ) -> Dataset:
     if not save_dataset:
-        return load_from_disk(dataset_name).train_test_split(test_size=test_size)
+        dataset = load_from_disk(dataset_name)
+        print(len(dataset["pixel_values"][0]))
+        return dataset.train_test_split(test_size=test_size)
     dictionary, _ = create_dataset_dictionary(directory)
     dataset = Dataset.from_list(dictionary)
     dataset = dataset.class_encode_column("labels")
     processed_dataset = dataset.map(process_convnext_sequence, batched=False)
+    processed_dataset = processed_dataset.remove_columns(["video"])
+    shuffled_dataset = processed_dataset.shuffle(seed=seed)
+    shuffled_dataset = shuffled_dataset.map(
+        lambda x: {"pixel_values": torch.tensor(x["pixel_values"]).squeeze()},
+        batched=False,
+    )
+    shuffled_dataset.save_to_disk(dataset_name)
+    return shuffled_dataset.train_test_split(test_size=test_size)

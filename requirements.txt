@@ -3,7 +3,7 @@ conda-forge::pandas
 conda-forge::transformers
 conda-forge::evaluate
 conda-forge::wandb
-
+conda-forge::accelerate
 
 pytorch::pytorch
 pytorch::torchvision
