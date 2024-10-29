@@ -1,5 +1,7 @@
 import torch
 import wandb
+
+
 from convnext import compute_metrics, initialize_convnext
 from transformers import TrainingArguments, Trainer
 from key import WANDB_KEY
@@ -40,6 +42,7 @@ def main() -> None:
 
     wandb_key = WANDB_KEY
     wandb.login(key=wandb_key)
+ 
     optimizer = torch.optim.AdamW(
         convnext.parameters(),
         lr=config.LEARNING_RATE,
@@ -71,7 +74,6 @@ def main() -> None:
         trainer.save_metrics("eval", eval_results)
     
     
-
 
 if __name__ == "__main__":
     main()
