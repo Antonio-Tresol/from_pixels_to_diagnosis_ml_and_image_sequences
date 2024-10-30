@@ -43,15 +43,15 @@ def main() -> None:
         eps=config.EPSILON,
     )
 
-    # trainer = Trainer(
-    #     model=convnext,
-    #     args=training_args,
-    #     train_dataset=dataset["train"],
-    #     eval_dataset=dataset["test"],
-    #     optimizers=(optimizer, None),
-    # )
+    trainer = Trainer(
+        model=convnext,
+        args=training_args,
+        train_dataset=dataset["train"],
+        eval_dataset=dataset["test"],
+        optimizers=(optimizer, None),
+    )
 
-    # trainer.train()
+    trainer.train()
 
 
 
