@@ -45,7 +45,7 @@ def sample_patient_images(
     return np.clip(indices, start_idx, end_idx - 1).astype(np.int64)
 
 
-def create_dataset_dictionary(directory: str) -> tuple[list, list]:
+def create_dataset_dictionary(directory: str, iterate_images: bool = False) -> tuple[list, list]:
     class_labels = ["Negative", "Positive"]
     all_image_sequences = []
     patients, labels = get_patients_from_dataset(
@@ -57,12 +57,21 @@ def create_dataset_dictionary(directory: str) -> tuple[list, list]:
             patient_dir,
             class_labels[patient_label],
         )
-        all_image_sequences.append(
-            {
-                "video": image_sequence,
-                "labels": class_labels[patient_label],
-            },
-        )
+        if iterate_images:
+            for image in image_sequence:
+                all_image_sequences.append(
+                    {
+                        "video": image,
+                        "labels": class_labels[patient_label],
+                    },
+                )
+        else:
+            all_image_sequences.append(
+                {
+                    "video": image_sequence,
+                    "labels": class_labels[patient_label],
+                },
+            )
     return all_image_sequences, class_labels
 
 
@@ -108,7 +117,7 @@ convnext_image_processor = ConvNextImageProcessor.from_pretrained(
 )
 
 def process_convnext_sequence(example: dict) -> dict:
-    inputs = convnext_image_processor(list(np.array(example["video"])), return_tensors="pt")
+    inputs = convnext_image_processor(np.array(example["video"]), return_tensors="pt")
     inputs["labels"] = example["labels"]
     return inputs
 
@@ -152,7 +161,8 @@ def create_convnext_dataset(
         dataset = load_from_disk(dataset_name)
         print(len(dataset["pixel_values"][0]))
         return dataset.train_test_split(test_size=test_size)
-    dictionary, _ = create_dataset_dictionary(directory)
+    dictionary, _ = create_dataset_dictionary(directory, iterate_images=True)
+    
     dataset = Dataset.from_list(dictionary)
     dataset = dataset.class_encode_column("labels")
     processed_dataset = dataset.map(process_convnext_sequence, batched=False)
