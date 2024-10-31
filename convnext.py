@@ -1,6 +1,12 @@
+import evaluate
+import numpy as np
 from transformers import ConvNextForImageClassification, ConvNextConfig
 import torch
 from datasets import Dataset
+
+
+eval_metrics = evaluate.combine(["accuracy", "precision", "recall"])
+
 
 def initialize_convnext(
     shuffled_dataset: Dataset,
@@ -19,4 +25,9 @@ def initialize_convnext(
         ignore_mismatched_sizes=True,
     ).to(device)
 
+
+def compute_metrics(p) -> dict:
+    preds = np.argmax(p.predictions, axis=1)
+    labels = p.label_ids
+    return eval_metrics.compute(predictions=preds, references=labels)
 
