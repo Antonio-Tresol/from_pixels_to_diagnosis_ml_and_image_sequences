@@ -4,6 +4,7 @@ conda-forge::transformers
 conda-forge::evaluate
 conda-forge::wandb
 conda-forge::accelerate
+anaconda::scikit-learn
 
 pytorch::pytorch
 pytorch::torchvision
