@@ -15,7 +15,7 @@ def main() -> None:
         test_size=config.TEST_SIZE,
         seed=config.SEED,
         save_dataset=False,
-        dataset_name="saved_dataset_mini",
+        dataset_name="saved_dataset",
     )
     vivit = initialize_vivit(train_dataset, device, config.MODEL_NAME)
 
