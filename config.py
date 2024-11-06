@@ -3,17 +3,24 @@ import random
 
 # Project constants
 PROJECT = "cs_research"
-MODEL_NAME = "google/vivit-b-16x2-kinetics400"
+VIVIT_MODEL_NAME = "google/vivit-b-16x2-kinetics400"
 CONVNEXT_MODEL_NAME = "facebook/convnext-tiny-224"
-RUN_NAME_CONVNEXT = f"convnext_dummy_run_{random.randint(0, 9999)}"
+RUN_NAME_CONVNEXT = f"convnext_run_{random.randint(0, 9999)}"
 RUN_NAME = f"vivit_run_{random.randint(0, 9999)}"
 DEVICE = "cuda" if torch.cuda.is_available() else "cpu"
 
 # General constants
-DATASET_DIR = "dataset"
+DATASET_DIR = "dataset_mini"
+
+VIVIT_SAVE_DATASET_DIR = f"vivit_saved_{DATASET_DIR}"
+VIVIT_SHALL_SAVE_DATASET = False
+
+CONVNEXT_SAVE_DATASET_DIR = f"convnext_saved_{DATASET_DIR}"
+CONVNEXT_SHALL_SAVE_DATASET = False
+
 TEST_SIZE = 0.3
 SEED = 42
-EPOCHS = 20
+EPOCHS = 10
 TRAIN_BATCH = 10
 EVAL_BATCH = 10
 WEIGHT_DECAY = 0.01

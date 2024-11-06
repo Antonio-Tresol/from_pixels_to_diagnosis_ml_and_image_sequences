@@ -2,15 +2,6 @@ import numpy as np
 from datasets import Dataset
 from transformers import VivitConfig, VivitForVideoClassification
 import torch
-import evaluate
-
-eval_metrics = evaluate.combine(["accuracy", "precision", "recall"])
-
-
-def compute_metrics(p) -> dict:
-    preds = np.argmax(p.predictions, axis=1)
-    labels = p.label_ids
-    return eval_metrics.compute(predictions=preds, references=labels)
 
 
 def collate_fn(batch) -> dict:

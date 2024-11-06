@@ -45,7 +45,10 @@ def sample_patient_images(
     return np.clip(indices, start_idx, end_idx - 1).astype(np.int64)
 
 
-def create_dataset_dictionary(directory: str, iterate_images: bool = False) -> tuple[list, list]:
+def create_dataset_dictionary(
+    directory: str,
+    iterate_images: bool = False,
+) -> tuple[list, list]:
     class_labels = ["Negative", "Positive"]
     all_image_sequences = []
     patients, labels = get_patients_from_dataset(
@@ -58,13 +61,12 @@ def create_dataset_dictionary(directory: str, iterate_images: bool = False) -> t
             class_labels[patient_label],
         )
         if iterate_images:
-            for image in image_sequence:
-                all_image_sequences.append(
-                    {
-                        "video": image,
-                        "labels": class_labels[patient_label],
-                    },
-                )
+            all_image_sequences.extend(
+                {
+                    "video": image,
+                    "labels": class_labels[patient_label],
+                } for image in image_sequence
+            )
         else:
             all_image_sequences.append(
                 {
@@ -95,10 +97,8 @@ def retrieve_image_sequence(
 
 
 def get_patients_from_dataset(directory: str) -> list:
-    # obtener todos los nombres de carpetas en positive y negative
     negative_patients = get_all_patients(Path(f"{directory}/Negatives/"))
     positive_patients = get_all_patients(Path(f"{directory}/Positives/"))
-    # labels
     negative_labels = [0] * len(negative_patients)
     positive_labels = [1] * len(positive_patients)
 
@@ -109,15 +109,19 @@ def get_patients_from_dataset(directory: str) -> list:
 
 
 image_processor = VivitImageProcessor.from_pretrained(
-    "google/vivit-b-16x2-kinetics400",
+    config.VIVIT_MODEL_NAME,
 )
 
 convnext_image_processor = ConvNextImageProcessor.from_pretrained(
     config.CONVNEXT_MODEL_NAME,
 )
 
+
 def process_convnext_sequence(example: dict) -> dict:
-    inputs = convnext_image_processor(np.array(example["video"]), return_tensors="pt")
+    inputs = convnext_image_processor(
+        np.array(example["video"]),
+        return_tensors="pt",
+    )
     inputs["labels"] = example["labels"]
     return inputs
 
@@ -136,6 +140,7 @@ def create_vivit_dataset(
     dataset_name: str,
 ) -> Dataset:
     if not save_dataset:
+        Path(dataset_name).mkdir(parents=True, exist_ok=True)
         return load_from_disk(dataset_name).train_test_split(test_size=test_size)
     dictionary, _ = create_dataset_dictionary(directory)
     dataset = Dataset.from_list(dictionary)
@@ -150,19 +155,20 @@ def create_vivit_dataset(
     shuffled_dataset.save_to_disk(dataset_name)
     return shuffled_dataset.train_test_split(test_size=test_size)
 
+
 def create_convnext_dataset(
-        directory: str,
-        test_size: float,
-        seed: int,
-        save_dataset: bool,
-        dataset_name: str,
+    directory: str,
+    test_size: float,
+    seed: int,
+    save_dataset: bool,
+    dataset_name: str,
 ) -> Dataset:
     if not save_dataset:
+        Path(dataset_name).mkdir(parents=True, exist_ok=True)
         dataset = load_from_disk(dataset_name)
-        print(len(dataset["pixel_values"][0]))
         return dataset.train_test_split(test_size=test_size)
     dictionary, _ = create_dataset_dictionary(directory, iterate_images=True)
-    
+
     dataset = Dataset.from_list(dictionary)
     dataset = dataset.class_encode_column("labels")
     processed_dataset = dataset.map(process_convnext_sequence, batched=False)

@@ -1,12 +1,13 @@
 import torch
 import wandb
 
-
-from convnext import compute_metrics, initialize_convnext
+from convnext import initialize_convnext
+from log_and_eval import convnext_compute_metrics
 from transformers import TrainingArguments, Trainer
 from key import WANDB_KEY
 import data_handling as dh
 import config
+
 
 def main() -> None:
     device = config.DEVICE
@@ -14,8 +15,8 @@ def main() -> None:
         directory=config.DATASET_DIR,
         test_size=config.TEST_SIZE,
         seed=config.SEED,
-        save_dataset=True,
-        dataset_name="dataset",
+        save_dataset=config.CONVNEXT_SHALL_SAVE_DATASET,
+        dataset_name=config.CONVNEXT_SAVE_DATASET_DIR,
     )
 
     convnext = initialize_convnext(dataset, device, config.CONVNEXT_MODEL_NAME)
@@ -42,7 +43,7 @@ def main() -> None:
 
     wandb_key = WANDB_KEY
     wandb.login(key=wandb_key)
- 
+
     optimizer = torch.optim.AdamW(
         convnext.parameters(),
         lr=config.LEARNING_RATE,
@@ -56,7 +57,7 @@ def main() -> None:
         train_dataset=dataset["train"],
         eval_dataset=dataset["test"],
         optimizers=(optimizer, None),
-        compute_metrics=compute_metrics,
+        compute_metrics=convnext_compute_metrics,
     )
     with wandb.init(
         project=config.PROJECT,
@@ -72,8 +73,7 @@ def main() -> None:
         eval_results = trainer.evaluate()
         trainer.log_metrics("eval", eval_results)
         trainer.save_metrics("eval", eval_results)
-    
-    
+
 
 if __name__ == "__main__":
     main()

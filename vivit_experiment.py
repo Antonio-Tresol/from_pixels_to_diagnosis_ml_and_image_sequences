@@ -1,11 +1,11 @@
 import torch
 import data_handling as dh
-from vivit import initialize_vivit, compute_metrics
+from vivit import initialize_vivit
 from transformers import Trainer, TrainingArguments
 import wandb
 import config
+from log_and_eval import vivit_compute_metrics
 from key import WANDB_KEY
-import random
 
 
 def main() -> None:
@@ -14,10 +14,10 @@ def main() -> None:
         directory=config.DATASET_DIR,
         test_size=config.TEST_SIZE,
         seed=config.SEED,
-        save_dataset=False,
-        dataset_name="saved_dataset",
+        save_dataset=config.VIVIT_SHALL_SAVE_DATASET,
+        dataset_name=config.VIVIT_SAVE_DATASET_DIR,
     )
-    vivit = initialize_vivit(train_dataset, device, config.MODEL_NAME)
+    vivit = initialize_vivit(train_dataset, device, config.VIVIT_MODEL_NAME)
 
     training_args = TrainingArguments(
         output_dir=config.TRAINING_DIR,
@@ -55,7 +55,7 @@ def main() -> None:
         train_dataset=train_dataset["train"],
         eval_dataset=train_dataset["test"],
         optimizers=(optimizer, None),
-        compute_metrics=compute_metrics,
+        compute_metrics=vivit_compute_metrics,
     )
     with wandb.init(
         project=config.PROJECT,
