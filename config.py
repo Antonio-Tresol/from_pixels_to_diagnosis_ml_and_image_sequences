@@ -5,8 +5,8 @@ import random
 PROJECT = "cs_research"
 VIVIT_MODEL_NAME = "google/vivit-b-16x2-kinetics400"
 CONVNEXT_MODEL_NAME = "facebook/convnext-tiny-224"
-RUN_NAME_CONVNEXT = f"convnext_run_{random.randint(0, 9999)}"
-RUN_NAME = f"vivit_run_{random.randint(0, 9999)}"
+RUN_NAME_CONVNEXT = f"convnext_{random.randint(0, 9999)}"
+RUN_NAME = f"vivit_{random.randint(0, 9999)}"
 DEVICE = "cuda" if torch.cuda.is_available() else "cpu"
 
 # General constants
@@ -14,6 +14,8 @@ DATASET_DIR = "dataset_mini"
 
 VIVIT_SAVE_DATASET_DIR = f"vivit_saved_{DATASET_DIR}"
 VIVIT_SHALL_SAVE_DATASET = False
+VIVIT_LOCAL_METRICS_DIR = "vivit_metrics/"
+VIVIT_CHECKPOINT_DIR = "vivit_model_checkpoints"
 
 CONVNEXT_SAVE_DATASET_DIR = f"convnext_saved_{DATASET_DIR}"
 CONVNEXT_SHALL_SAVE_DATASET = False
@@ -31,6 +33,7 @@ OPTIMIZATION_ALGORITHM = "adamw_torch"
 LEARNING_RATE = 0.000005
 BETAS = (0.9, 0.999)
 EPSILON = 1e-08
+EARLY_STOPPING = 3
 
 # Logging constants
 LOGGER = "wandb"
@@ -38,8 +41,9 @@ LOGGING_DIR = "./logs"
 LOGGING_STEPS = 10
 
 # Other constants
-EVAL_STRATEGY = "steps"
+EVAL_STRATEGY = "epoch"
 EVAL_STEPS = 10
 WARMUP_STEPS = int(0.1 * 20)
 SCHEDULER = "linear"
 SMALL_FLOATING_POINT = True
+REPLICATES = 2
