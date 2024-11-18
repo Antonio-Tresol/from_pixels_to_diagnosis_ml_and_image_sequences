@@ -10,11 +10,11 @@ RUN_NAME = f"vivit_{random.randint(0, 9999)}"
 DEVICE = "cuda" if torch.cuda.is_available() else "cpu"
 
 # General constants
-DATASET_DIR = "dataset_mini"
+DATASET_DIR = "dataset"
 
 VIVIT_SAVE_DATASET_DIR = f"vivit_saved_{DATASET_DIR}"
-VIVIT_SHALL_SAVE_DATASET = False
-VIVIT_LOCAL_METRICS_DIR = "vivit_metrics/"
+VIVIT_SHALL_SAVE_DATASET = True
+VIVIT_LOCAL_METRICS_DIR = "vivit_metrics"
 VIVIT_CHECKPOINT_DIR = "vivit_model_checkpoints"
 
 CONVNEXT_SAVE_DATASET_DIR = f"convnext_saved_{DATASET_DIR}"
@@ -22,7 +22,7 @@ CONVNEXT_SHALL_SAVE_DATASET = False
 
 TEST_SIZE = 0.3
 SEED = 42
-EPOCHS = 10
+EPOCHS = 20
 TRAIN_BATCH = 10
 EVAL_BATCH = 10
 WEIGHT_DECAY = 0.01
@@ -33,7 +33,7 @@ OPTIMIZATION_ALGORITHM = "adamw_torch"
 LEARNING_RATE = 0.000005
 BETAS = (0.9, 0.999)
 EPSILON = 1e-08
-EARLY_STOPPING = 3
+EARLY_STOPPING = 5
 
 # Logging constants
 LOGGER = "wandb"
@@ -46,4 +46,4 @@ EVAL_STEPS = 10
 WARMUP_STEPS = int(0.1 * 20)
 SCHEDULER = "linear"
 SMALL_FLOATING_POINT = True
-REPLICATES = 2
+REPLICATES = 10
