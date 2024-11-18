@@ -13,3 +13,5 @@ vivit_saved_dataset_mini/*
 vivit_saved_dataset/*
 convnext_saved_dataset_mini/*
 convnext_saved_dataset/*
+vivit_model_checkpoints/*
+vivit_metrics/*
