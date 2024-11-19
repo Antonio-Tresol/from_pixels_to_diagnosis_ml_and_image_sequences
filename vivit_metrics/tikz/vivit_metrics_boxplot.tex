@@ -1,0 +1,137 @@
+% This file was created with tikzplotlib v0.10.1.
+\begin{tikzpicture}
+
+\definecolor{brown1794649}{RGB}{179,46,49}
+\definecolor{darkgray176}{RGB}{176,176,176}
+\definecolor{darkslategray67}{RGB}{67,67,67}
+\definecolor{lightpink240191172}{RGB}{240,191,172}
+\definecolor{salmon22811995}{RGB}{228,119,95}
+
+\begin{axis}[
+tick align=outside,
+tick pos=left,
+x grid style={darkgray176},
+xlabel={Metric},
+xmajorgrids,
+xmin=-0.5, xmax=2.5,
+xtick style={color=black},
+xtick={0,1,2},
+xticklabels={Accuracy,Precision,Recall},
+y grid style={darkgray176},
+ylabel={Score},
+ymajorgrids,
+ymin=0.539326923076923, ymax=0.943365384615385,
+ytick style={color=black},
+ytick={0.5,0.55,0.6,0.65,0.7,0.75,0.8,0.85,0.9,0.95},
+yticklabels={
+  \(\displaystyle {0.50}\),
+  \(\displaystyle {0.55}\),
+  \(\displaystyle {0.60}\),
+  \(\displaystyle {0.65}\),
+  \(\displaystyle {0.70}\),
+  \(\displaystyle {0.75}\),
+  \(\displaystyle {0.80}\),
+  \(\displaystyle {0.85}\),
+  \(\displaystyle {0.90}\),
+  \(\displaystyle {0.95}\)
+}
+]
+\path [draw=darkslategray67, fill=lightpink240191172]
+(axis cs:-0.4,0.64)
+--(axis cs:0.4,0.64)
+--(axis cs:0.4,0.76)
+--(axis cs:-0.4,0.76)
+--(axis cs:-0.4,0.64)
+--cycle;
+\addplot [darkslategray67]
+table {%
+0 0.64
+0 0.56
+};
+\addplot [darkslategray67]
+table {%
+0 0.76
+0 0.88
+};
+\addplot [darkslategray67]
+table {%
+-0.2 0.56
+0.2 0.56
+};
+\addplot [darkslategray67]
+table {%
+-0.2 0.88
+0.2 0.88
+};
+\path [draw=darkslategray67, fill=salmon22811995]
+(axis cs:0.6,0.607142857142857)
+--(axis cs:1.4,0.607142857142857)
+--(axis cs:1.4,0.805555555555556)
+--(axis cs:0.6,0.805555555555556)
+--(axis cs:0.6,0.607142857142857)
+--cycle;
+\addplot [darkslategray67]
+table {%
+1 0.607142857142857
+1 0.558441558441558
+};
+\addplot [darkslategray67]
+table {%
+1 0.805555555555556
+1 0.925
+};
+\addplot [darkslategray67]
+table {%
+0.8 0.558441558441558
+1.2 0.558441558441558
+};
+\addplot [darkslategray67]
+table {%
+0.8 0.925
+1.2 0.925
+};
+\path [draw=darkslategray67, fill=brown1794649]
+(axis cs:1.6,0.572916666666667)
+--(axis cs:2.4,0.572916666666667)
+--(axis cs:2.4,0.75)
+--(axis cs:1.6,0.75)
+--(axis cs:1.6,0.572916666666667)
+--cycle;
+\addplot [darkslategray67]
+table {%
+2 0.572916666666667
+2 0.557692307692308
+};
+\addplot [darkslategray67]
+table {%
+2 0.75
+2 0.827922077922078
+};
+\addplot [darkslategray67]
+table {%
+1.8 0.557692307692308
+2.2 0.557692307692308
+};
+\addplot [darkslategray67]
+table {%
+1.8 0.827922077922078
+2.2 0.827922077922078
+};
+\addplot [darkslategray67]
+table {%
+-0.4 0.68
+0.4 0.68
+};
+\addplot [darkslategray67]
+table {%
+0.6 0.649122807017544
+1.4 0.649122807017544
+};
+\addplot [darkslategray67]
+table {%
+1.6 0.638888888888889
+2.4 0.638888888888889
+};
+\end{axis}
+
+\end{tikzpicture}
