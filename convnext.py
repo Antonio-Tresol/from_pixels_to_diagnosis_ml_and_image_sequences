@@ -5,7 +5,6 @@ import torch
 from datasets import Dataset
 
 
-
 def initialize_convnext(
     shuffled_dataset: Dataset,
     device: str,
