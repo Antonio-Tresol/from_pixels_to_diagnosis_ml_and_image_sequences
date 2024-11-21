@@ -65,8 +65,10 @@ def create_dataset_dictionary(
                 {
                     "video": image,
                     "labels": class_labels[patient_label],
+                    "patient": patient_dir,
                 } for image in image_sequence
             )
+            print(patient_dir)
         else:
             all_image_sequences.append(
                 {
@@ -167,16 +169,17 @@ def create_convnext_dataset(
         Path(dataset_name).mkdir(parents=True, exist_ok=True)
         dataset = load_from_disk(dataset_name)
         return dataset.train_test_split(test_size=test_size)
-    dictionary, _ = create_dataset_dictionary(directory, iterate_images=True)
+    dictionary, _ = create_dataset_dictionary(directory)
 
     dataset = Dataset.from_list(dictionary)
     dataset = dataset.class_encode_column("labels")
     processed_dataset = dataset.map(process_convnext_sequence, batched=False)
     processed_dataset = processed_dataset.remove_columns(["video"])
+    print(processed_dataset.column_names)
     shuffled_dataset = processed_dataset.shuffle(seed=seed)
     shuffled_dataset = shuffled_dataset.map(
         lambda x: {"pixel_values": torch.tensor(x["pixel_values"]).squeeze()},
-        batched=False,
+        batched=False
     )
     shuffled_dataset.save_to_disk(dataset_name)
     return shuffled_dataset.train_test_split(test_size=test_size)
