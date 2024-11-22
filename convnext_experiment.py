@@ -9,6 +9,7 @@ from sklearn.metrics import (
 import torch
 import wandb
 import numpy as np
+import random
 
 from datasets import Dataset, concatenate_datasets
 from convnext import initialize_convnext
@@ -110,8 +111,8 @@ def post_evaluate_and_save_metrics(
     test_labels = np.array(test_labels)
     patient_predictions = np.array(patient_predictions)
     accuracy = accuracy_score(test_labels, patient_predictions)
-    precision = precision_score(test_labels, patient_predictions)
-    recall = recall_score(test_labels, patient_predictions)
+    precision = precision_score(test_labels, patient_predictions, zero_division=0)
+    recall = recall_score(test_labels, patient_predictions, zero_division=0)
     conf_matrix = confusion_matrix(test_labels, patient_predictions)
 
     metrics = pd.DataFrame(
@@ -125,7 +126,7 @@ def post_evaluate_and_save_metrics(
     metrics_dir = Path(config.CONVNEXT_LOCAL_METRICS_DIR)
     metrics_dir.mkdir(exist_ok=True)
 
-    metrics_file = metrics_dir / "convnext_validation_metrics_all_runs.csv"
+    metrics_file = metrics_dir / Path(config.CONVNEXT_METRICS)
     if metrics_file.exists():
         metrics.to_csv(metrics_file, mode="a", header=False, index=False)
     else:
@@ -133,7 +134,7 @@ def post_evaluate_and_save_metrics(
 
     conf_matrix_df = pd.DataFrame(conf_matrix)
     confusion_matrix_file: Path = metrics_dir / Path(
-        f"confusion_matrix_run_{run_num}.csv",
+        f"{config.CONVNEXT_CM}{run_num}.csv",
     )
     conf_matrix_df.to_csv(confusion_matrix_file, index=False)
 
@@ -179,7 +180,7 @@ def run_convnext_experiment() -> None:
     device = config.DEVICE
     wandb.login(key=WANDB_KEY)
     for run_num in range(config.REPLICATES):
-        seed = config.SEED + run_num
+        seed = int(config.SEED + run_num / random.randint(1, 9999))
         dataset, split = cdh.create_convnext_dataset(
             directory=config.DATASET_DIR,
             test_size=config.TEST_SIZE,

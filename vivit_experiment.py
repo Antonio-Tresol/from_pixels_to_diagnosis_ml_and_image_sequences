@@ -91,8 +91,12 @@ def post_evaluated_and_save_metrics(
     pred_labels = np.argmax(predictions, axis=1)
 
     accuracy = accuracy_score(labels, pred_labels)
-    precision = precision_score(labels, pred_labels, average="macro")
-    recall = recall_score(labels, pred_labels, average="macro")
+    precision = precision_score(
+        labels,
+        pred_labels,
+        zero_division=0,
+    )
+    recall = recall_score(labels, pred_labels, zero_division=0)
     conf_matrix = confusion_matrix(labels, pred_labels)
 
     metrics = pd.DataFrame(
@@ -105,7 +109,7 @@ def post_evaluated_and_save_metrics(
 
     vivit_metrics_dir = Path(config.VIVIT_LOCAL_METRICS_DIR)
     vivit_metrics_dir.mkdir(exist_ok=True)
-    metrics_file = vivit_metrics_dir / Path("vivit_validation_metrics_all_runs.csv")
+    metrics_file = vivit_metrics_dir / Path(config.VIVIT_METRICS)
     if metrics_file.exists():
         metrics.to_csv(metrics_file, mode="a", header=False, index=False)
     else:
@@ -113,7 +117,7 @@ def post_evaluated_and_save_metrics(
 
     conf_matrix_df = pd.DataFrame(conf_matrix)
     confusion_matrix_file: Path = vivit_metrics_dir / Path(
-        f"confusion_matrix_run_{run_num}.csv",
+        f"{config.VIVIT_CM}{run_num}.csv",
     )
     conf_matrix_df.to_csv(confusion_matrix_file, index=False)
 

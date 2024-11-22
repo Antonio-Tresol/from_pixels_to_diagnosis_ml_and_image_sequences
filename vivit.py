@@ -1,10 +1,9 @@
-import numpy as np
 from datasets import Dataset
 from transformers import VivitConfig, VivitForVideoClassification
 import torch
 
 
-def collate_fn(batch) -> dict:
+def collate_fn(batch: torch.Tensor) -> dict:
     return {
         "pixel_values": torch.stack(
             [(torch.tensor(x["pixel_values"])) for x in batch],
