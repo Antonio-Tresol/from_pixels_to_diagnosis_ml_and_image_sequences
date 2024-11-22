@@ -13,15 +13,16 @@ DEVICE = "cuda" if torch.cuda.is_available() else "cpu"
 DATASET_DIR = "dataset_mini"
 
 VIVIT_SAVE_DATASET_DIR = f"vivit_saved_{DATASET_DIR}"
-VIVIT_SHALL_SAVE_DATASET = True
 VIVIT_LOCAL_METRICS_DIR = "vivit_metrics"
 VIVIT_CHECKPOINT_DIR = "vivit_model_checkpoints"
+VIVIT_METRICS = "vivit_new_val_metrics_all_runs.csv"
+VIVIT_CM = "vivit_cm_run_"
 
 CONVNEXT_SAVE_DATASET_DIR = f"convnext_saved_{DATASET_DIR}"
-CONVNEXT_SHALL_SAVE_DATASET = False
-
 CONVNEXT_LOCAL_METRICS_DIR = "convnext_metrics"
 CONVNEXT_CHECKPOINT_DIR = "convnext_model_checkpoints"
+CONVNEXT_METRICS = "convnext_validation_metrics_all_runs.csv"
+CONVNEXT_CM = "convnext_cm_run_"
 
 TEST_SIZE = 0.3
 SEED = 42

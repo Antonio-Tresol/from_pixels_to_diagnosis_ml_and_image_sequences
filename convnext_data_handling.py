@@ -95,6 +95,7 @@ def create_convnext_dataset(
     if dataset_path.exists():
         try:
             dataset = load_from_disk(dataset_name)
+            dataset = dataset.shuffle(seed=seed)
             if has_required_columns(dataset):
                 split = get_patients_from_dataset_and_split(
                     directory,
@@ -109,7 +110,7 @@ def create_convnext_dataset(
                 "Warning: Loaded dataset missing required columns."
                 " Creating new dataset.",
             )
-        except Exception as e:
+        except (ValueError, OSError) as e:
             print(f"Error loading dataset: {e}. Creating new dataset.")
 
     dictionary, split, class_labels = create_dataset_dictionary_for_convnext(

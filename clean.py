@@ -2,34 +2,33 @@ import pandas as pd
 from pathlib import Path
 import shutil
 
-# Define the path to the dataset
-dataset_dir = Path("dataset/Patients_CT")
+dataset_dir: Path = Path("dataset/Patients_CT")
 
 
-# Function to remove the 'bone' folder for each patient
-def remove_bone_folders():
+def remove_bone_folders() -> None:
+    """Remove 'bone' folders from all patient directories."""
     for patient_id in range(49, 131):
-        bone_dir = dataset_dir / f"{patient_id:03d}" / "bone"
+        bone_dir: Path = dataset_dir / f"{patient_id:03d}" / "bone"
         if bone_dir.exists() and bone_dir.is_dir():
             shutil.rmtree(bone_dir)
             print(f"Removed {bone_dir}")
 
 
-# Function to remove images ending with '_HGE_Seg.jpg' in the 'brain' folder for each patient
-def remove_segmentation_images():
+def remove_segmentation_images() -> None:
+    """Remove segmentation images ending with '_HGE_Seg.jpg' from brain folders."""
     for patient_id in range(49, 131):
-        brain_dir = dataset_dir / f"{patient_id:03d}" / "brain"
+        brain_dir: Path = dataset_dir / f"{patient_id:03d}" / "brain"
         if brain_dir.exists() and brain_dir.is_dir():
             for img_file in brain_dir.glob("*_HGE_Seg.jpg"):
                 img_file.unlink()
                 print(f"Removed {img_file}")
 
 
-# Function to move contents of 'brain' folder to parent folder and remove 'brain' folder
-def move_and_remove_brain_folders():
+def move_and_remove_brain_folders() -> None:
+    """Move contents of brain folders to parent directories and remove brain folders."""
     for patient_id in range(49, 131):
-        brain_dir = dataset_dir / f"{patient_id:03d}" / "brain"
-        parent_dir = brain_dir.parent
+        brain_dir: Path = dataset_dir / f"{patient_id:03d}" / "brain"
+        parent_dir: Path = brain_dir.parent
         if brain_dir.exists() and brain_dir.is_dir():
             for item in brain_dir.iterdir():
                 shutil.move(str(item), str(parent_dir))
@@ -38,75 +37,90 @@ def move_and_remove_brain_folders():
             print(f"Removed {brain_dir}")
 
 
-# Function to set labels per patient and organize them into 'Positives' and 'Negatives' folders
-def set_labels_per_patient():
-    hemorrhage_diagnosis = pd.read_csv(
+def set_labels_per_patient() -> None:
+    """Organize patients into Positives and Negatives folders based on hemorrhage diagnosis.
+    Reads diagnosis from CSV file and moves patient folders accordingly.
+    """
+    hemorrhage_diagnosis: pd.DataFrame = pd.read_csv(
         "dataset/hemorrhage_diagnosis_per_patient.csv"
     )
-    positives_dir = dataset_dir.parent / "Positives"
-    negatives_dir = dataset_dir.parent / "Negatives"
+    positives_dir: Path = dataset_dir.parent / "Positives"
+    negatives_dir: Path = dataset_dir.parent / "Negatives"
 
     positives_dir.mkdir(parents=True, exist_ok=True)
     negatives_dir.mkdir(parents=True, exist_ok=True)
 
     for _, row in hemorrhage_diagnosis.iterrows():
-        patient_id = row["PatientNumber"]
-        diagnosis = row["has_hemorrhage"]
-        patient_dir = dataset_dir / f"{patient_id:03d}"
+        patient_id: int = row["PatientNumber"]
+        diagnosis: int = row["has_hemorrhage"]
+        patient_dir: Path = dataset_dir / f"{patient_id:03d}"
 
-        if diagnosis == "1" or diagnosis == 1:
+        if diagnosis in {"1", 1}:
             if not (positives_dir / f"{patient_id:03d}").exists():
                 shutil.move(str(patient_dir), str(positives_dir))
                 print(f"Moved {patient_dir} to {positives_dir}")
-        else:
-            if not (negatives_dir / f"{patient_id:03d}").exists():
-                shutil.move(str(patient_dir), str(negatives_dir))
-                print(f"Moved {patient_dir} to {negatives_dir}")
+        elif not (negatives_dir / f"{patient_id:03d}").exists():
+            shutil.move(str(patient_dir), str(negatives_dir))
+            print(f"Moved {patient_dir} to {negatives_dir}")
 
     if dataset_dir.exists() and dataset_dir.is_dir():
         shutil.rmtree(dataset_dir)
 
 
-# Function to count the number of folders in 'Positives' and 'Negatives' directories
-def count_folders():
-    positives_dir = dataset_dir.parent / "Positives"
-    negatives_dir = dataset_dir.parent / "Negatives"
+def count_folders() -> tuple[int, int]:
+    """Count number of folders in Positives and Negatives directories.
 
-    positives_count = sum(1 for _ in positives_dir.iterdir() if _.is_dir())
-    negatives_count = sum(1 for _ in negatives_dir.iterdir() if _.is_dir())
+    Returns
+    -------
+        tuple[int, int]: Count of positive and negative folders
+
+    """
+    positives_dir: Path = dataset_dir.parent / "Positives"
+    negatives_dir: Path = dataset_dir.parent / "Negatives"
+
+    positives_count: int = sum(1 for _ in positives_dir.iterdir() if _.is_dir())
+    negatives_count: int = sum(1 for _ in negatives_dir.iterdir() if _.is_dir())
 
     print(f"Number of folders in Positives: {positives_count}")
     print(f"Number of folders in Negatives: {negatives_count}")
+    return positives_count, negatives_count
 
 
-# Function to find the minimum number of images in the folders of all the patients and identify which patient
-def find_min_images():
-    positives_dir = dataset_dir.parent / "Positives"
-    negatives_dir = dataset_dir.parent / "Negatives"
+def find_min_images() -> tuple[int, str]:
+    """Find the minimum number of images across all patient folders.
 
-    min_images = float("inf")
-    min_patient = None
+    Returns
+    -------
+        tuple[int, str]: Minimum image count and corresponding patient ID
+
+    """
+    positives_dir: Path = dataset_dir.parent / "Positives"
+    negatives_dir: Path = dataset_dir.parent / "Negatives"
+
+    min_images: int = float("inf")
+    min_patient: str = ""
 
     for patient_dir in positives_dir.iterdir():
         if patient_dir.is_dir():
-            num_images = sum(1 for _ in patient_dir.glob("*.jpg"))
+            num_images: int = sum(1 for _ in patient_dir.glob("*.jpg"))
             if num_images < min_images:
                 min_images = num_images
                 min_patient = patient_dir.name
 
     for patient_dir in negatives_dir.iterdir():
         if patient_dir.is_dir():
-            num_images = sum(1 for _ in patient_dir.glob("*.jpg"))
+            num_images: int = sum(1 for _ in patient_dir.glob("*.jpg"))
             if num_images < min_images:
                 min_images = num_images
                 min_patient = patient_dir.name
 
     print(f"Minimum number of images in any patient folder: {min_images}")
     print(f"Patient with minimum number of images: {min_patient}")
+    return min_images, min_patient
 
 
-# Execute the function
 def main() -> None:
+    """Execute all dataset cleaning and organization functions."""
     remove_bone_folders()
     remove_segmentation_images()
     move_and_remove_brain_folders()

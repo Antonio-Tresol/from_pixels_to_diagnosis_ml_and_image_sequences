@@ -72,7 +72,7 @@ def create_vivit_dataset(
                 .shuffle(seed=seed)
                 .train_test_split(test_size=test_size)
             )
-        except Exception as e:
+        except (OSError, ValueError) as e:
             print(f"Error loading dataset: {e}. Creating new dataset.")
 
     dictionary, _ = create_dataset_dictionary_for_vivit(directory)
@@ -89,5 +89,3 @@ def create_vivit_dataset(
     )
     shuffled_dataset.save_to_disk(dataset_name)
     return shuffled_dataset.train_test_split(test_size=test_size)
-
-
