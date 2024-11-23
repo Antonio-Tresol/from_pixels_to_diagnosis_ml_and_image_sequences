@@ -11,7 +11,7 @@ import wandb
 import numpy as np
 import random
 
-from datasets import Dataset, concatenate_datasets
+from datasets import Dataset
 from convnext import initialize_convnext
 from transformers import ConvNextForImageClassification
 from logging_and_model_evaluation import convnext_compute_metrics
@@ -83,7 +83,8 @@ def post_evaluate_and_save_metrics(
     complete_dataset: Dataset,
 ) -> None:
     """Evaluate ConvNext model at patient level using existing dataset"""
-    test_patients, test_labels = split["test"]
+    test_patients = split["test"]["patient_id"]
+    test_labels = split["test"]["labels"]
     device = convnext.device
     convnext.eval()
 
@@ -102,6 +103,7 @@ def post_evaluate_and_save_metrics(
                     .to(device),
                 }
                 outputs = convnext(**inputs)
+
                 prediction = outputs.logits.cpu().argmax(dim=1).item()
                 patient_image_predictions.append(prediction)
 
@@ -111,8 +113,12 @@ def post_evaluate_and_save_metrics(
     test_labels = np.array(test_labels)
     patient_predictions = np.array(patient_predictions)
     accuracy = accuracy_score(test_labels, patient_predictions)
-    precision = precision_score(test_labels, patient_predictions, zero_division=0)
-    recall = recall_score(test_labels, patient_predictions, zero_division=0)
+    precision = precision_score(
+        test_labels,
+        patient_predictions,
+        zero_division=np.nan,
+    )
+    recall = recall_score(test_labels, patient_predictions, zero_division=np.nan)
     conf_matrix = confusion_matrix(test_labels, patient_predictions)
 
     metrics = pd.DataFrame(
@@ -161,18 +167,12 @@ def train_and_evaluate_model(trainer: Trainer, run_num: int, split: dict) -> Non
     eval_results = trainer.evaluate()
     trainer.log_metrics("eval", eval_results)
     trainer.save_metrics("eval", eval_results)
-    complete_dataset = concatenate_datasets(
-        [
-            trainer.train_dataset,
-            trainer.eval_dataset,
-        ],
-    )
     # evaluate the model on patient level
     post_evaluate_and_save_metrics(
         run_num,
         trainer.model,
         split,
-        complete_dataset,
+        trainer.eval_dataset,
     )
 
 
@@ -180,7 +180,7 @@ def run_convnext_experiment() -> None:
     device = config.DEVICE
     wandb.login(key=WANDB_KEY)
     for run_num in range(config.REPLICATES):
-        seed = int(config.SEED + run_num / random.randint(1, 9999))
+        seed = config.SEED + run_num * random.randint(1, 9999)
         dataset, split = cdh.create_convnext_dataset(
             directory=config.DATASET_DIR,
             test_size=config.TEST_SIZE,
