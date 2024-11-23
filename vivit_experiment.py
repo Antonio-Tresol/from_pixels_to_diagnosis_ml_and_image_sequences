@@ -77,9 +77,6 @@ def create_trainer(
         eval_dataset=train_dataset["test"],
         optimizers=(optimizer, None),
         compute_metrics=vivit_compute_metrics,
-        callbacks=[
-            EarlyStoppingCallback(early_stopping_patience=config.EARLY_STOPPING),
-        ],
     )
 
 

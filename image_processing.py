@@ -68,11 +68,12 @@ def retrieve_all_patient_images(
     # Get all jpg files and sort them numerically
     image_files = sorted(patient_path.glob("*.jpg"), key=lambda x: int(x.stem))
     images = []
-    for image_file in image_files:
+    for i, image_file in enumerate(image_files):
         image = Image.open(image_file)
         image = image.convert("RGB")
         image_array = np.array(image)
         images.append((image_array, int(image_file.stem)))
         image.close()
-
+        if i == 18:
+            return images
     return images
