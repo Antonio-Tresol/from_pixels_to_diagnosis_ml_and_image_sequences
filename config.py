@@ -1,3 +1,4 @@
+import pandas as pd
 import torch
 import random
 
@@ -11,6 +12,7 @@ DEVICE = "cuda" if torch.cuda.is_available() else "cpu"
 
 # General constants
 DATASET_DIR = "dataset_mini"
+DATASET_INFO = pd.read_csv("dataset/hemorrhage_diagnosis_per_slice.csv")
 
 VIVIT_SAVE_DATASET_DIR = f"vivit_saved_{DATASET_DIR}"
 VIVIT_LOCAL_METRICS_DIR = "vivit_metrics"
@@ -26,7 +28,7 @@ CONVNEXT_CM = "convnext_cm_run_"
 
 TEST_SIZE = 0.3
 SEED = 42
-EPOCHS = 10
+EPOCHS = 5
 TRAIN_BATCH = 10
 EVAL_BATCH = 10
 WEIGHT_DECAY = 0.01

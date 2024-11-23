@@ -57,3 +57,22 @@ def retrieve_image_sequence(
         patient_path=patient_path,
         indices=indices,
     )
+
+
+def retrieve_all_patient_images(
+    directory: str,
+    patient_dir: str,
+    patient_label: str,
+) -> np.ndarray:
+    patient_path = Path(f"{directory}/{patient_label}s/{patient_dir}")
+    # Get all jpg files and sort them numerically
+    image_files = sorted(patient_path.glob("*.jpg"), key=lambda x: int(x.stem))
+    images = []
+    for image_file in image_files:
+        image = Image.open(image_file)
+        image = image.convert("RGB")
+        image_array = np.array(image)
+        images.append((image_array, int(image_file.stem)))
+        image.close()
+
+    return images

@@ -1,4 +1,5 @@
 from pathlib import Path
+import random
 import torch
 import vivit_data_handling as dh
 from vivit import initialize_vivit
@@ -94,9 +95,9 @@ def post_evaluated_and_save_metrics(
     precision = precision_score(
         labels,
         pred_labels,
-        zero_division=0,
+        zero_division=np.nan,
     )
-    recall = recall_score(labels, pred_labels, zero_division=0)
+    recall = recall_score(labels, pred_labels, zero_division=np.nan)
     conf_matrix = confusion_matrix(labels, pred_labels)
 
     metrics = pd.DataFrame(
@@ -161,7 +162,7 @@ def run_experiment() -> None:
     wandb.login(key=wandb_key)
 
     for run_num in range(config.REPLICATES):
-        seed = config.SEED + run_num
+        seed = config.SEED + run_num * random.randint(1, 9999)
         torch.manual_seed(seed)
         np.random.default_rng(seed)
 

@@ -44,7 +44,7 @@ def create_dataset_dictionary_for_vivit(
                 "labels": class_labels[patient_label],
             },
         )
-    return all_image_sequences, class_labels
+    return all_image_sequences
 
 
 image_processor = VivitImageProcessor.from_pretrained(
@@ -75,7 +75,7 @@ def create_vivit_dataset(
         except (OSError, ValueError) as e:
             print(f"Error loading dataset: {e}. Creating new dataset.")
 
-    dictionary, _ = create_dataset_dictionary_for_vivit(directory)
+    dictionary = create_dataset_dictionary_for_vivit(directory)
     dataset = Dataset.from_list(dictionary)
     dataset = dataset.class_encode_column("labels")
 
