@@ -15,3 +15,5 @@ convnext_saved_dataset_mini/*
 convnext_saved_dataset/*
 vivit_model_checkpoints/*
 convnext_model_checkpoints/*
+vivit_model_checkpoints_new/*
+convnext_model_checkpoints_new/*
