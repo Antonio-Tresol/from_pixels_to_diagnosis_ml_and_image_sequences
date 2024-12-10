@@ -209,5 +209,6 @@ def run_convnext_experiment() -> None:
             train_and_evaluate_model(trainer, run_num, split)
 
 
+
 if __name__ == "__main__":
     run_convnext_experiment()
