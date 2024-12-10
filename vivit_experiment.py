@@ -1,6 +1,7 @@
 from pathlib import Path
+import random
 import torch
-import data_handling as dh
+import vivit_data_handling as dh
 from vivit import initialize_vivit
 from transformers import (
     Trainer,
@@ -10,7 +11,7 @@ from transformers import (
 )
 import wandb
 import config
-from log_and_eval import vivit_compute_metrics
+from logging_and_model_evaluation import vivit_compute_metrics
 from key import WANDB_KEY
 from sklearn.metrics import (
     accuracy_score,
@@ -51,7 +52,7 @@ def create_training_arguments(run_num: int, seed: int) -> TrainingArguments:
         lr_scheduler_type=config.SCHEDULER,
         fp16=config.SMALL_FLOATING_POINT,
         report_to=config.LOGGER,
-        run_name=f"{config.RUN_NAME}_run_{run_num}",
+        run_name=f"{config.VIVIT_RUN_NAME}_run_{run_num}",
         # so the trainer takes the best checkpoint at the end of training
         load_best_model_at_end=True,
         # how many checkpoints to save
@@ -76,27 +77,26 @@ def create_trainer(
         eval_dataset=train_dataset["test"],
         optimizers=(optimizer, None),
         compute_metrics=vivit_compute_metrics,
-        callbacks=[
-            EarlyStoppingCallback(early_stopping_patience=config.EARLY_STOPPING),
-        ],
     )
 
 
-def save_metrics_and_confusion_matrix_locally(
+def post_evaluated_and_save_metrics(
     run_num: int,
     train_dataset: Dataset,
     trainer: Trainer,
 ) -> None:
-    # Compute predictions and metrics
     predictions, labels, _ = trainer.predict(train_dataset["test"])
     pred_labels = np.argmax(predictions, axis=1)
 
     accuracy = accuracy_score(labels, pred_labels)
-    precision = precision_score(labels, pred_labels, average="macro")
-    recall = recall_score(labels, pred_labels, average="macro")
+    precision = precision_score(
+        labels,
+        pred_labels,
+        zero_division=np.nan,
+    )
+    recall = recall_score(labels, pred_labels, zero_division=np.nan)
     conf_matrix = confusion_matrix(labels, pred_labels)
 
-    # Create metrics DataFrame with run number
     metrics = pd.DataFrame(
         {
             "Run": [run_num] * 3,
@@ -105,23 +105,20 @@ def save_metrics_and_confusion_matrix_locally(
         },
     )
 
-    # Save metrics - append if file exists
     vivit_metrics_dir = Path(config.VIVIT_LOCAL_METRICS_DIR)
     vivit_metrics_dir.mkdir(exist_ok=True)
-    metrics_file = vivit_metrics_dir / Path("vivit_validation_metrics_all_runs.csv")
+    metrics_file = vivit_metrics_dir / Path(config.VIVIT_METRICS)
     if metrics_file.exists():
         metrics.to_csv(metrics_file, mode="a", header=False, index=False)
     else:
         metrics.to_csv(metrics_file, index=False)
 
-    # Save confusion matrix for this run
     conf_matrix_df = pd.DataFrame(conf_matrix)
     confusion_matrix_file: Path = vivit_metrics_dir / Path(
-        f"confusion_matrix_run_{run_num}.csv",
+        f"{config.VIVIT_CM}{run_num}.csv",
     )
     conf_matrix_df.to_csv(confusion_matrix_file, index=False)
 
-    # Log to wandb
     wandb.log(
         {
             "validation_metrics": wandb.Table(dataframe=metrics),
@@ -150,7 +147,7 @@ def train_and_evaluate_model(
     trainer.save_metrics("eval", eval_results)
 
     # Get predictions on the validation set
-    save_metrics_and_confusion_matrix_locally(
+    post_evaluated_and_save_metrics(
         run_num,
         train_dataset,
         trainer,
@@ -162,7 +159,7 @@ def run_experiment() -> None:
     wandb.login(key=wandb_key)
 
     for run_num in range(config.REPLICATES):
-        seed = config.SEED + run_num
+        seed = config.SEED + run_num * random.randint(1, 9999)
         torch.manual_seed(seed)
         np.random.default_rng(seed)
 
@@ -170,7 +167,6 @@ def run_experiment() -> None:
             directory=config.DATASET_DIR,
             test_size=config.TEST_SIZE,
             seed=seed,
-            save_dataset=config.VIVIT_SHALL_SAVE_DATASET,
             dataset_name=config.VIVIT_SAVE_DATASET_DIR,
         )
 
@@ -186,8 +182,8 @@ def run_experiment() -> None:
         with wandb.init(
             project=config.PROJECT,
             job_type="train",
-            tags=[config.RUN_NAME],
-            name=f"{config.RUN_NAME}_run_{run_num}",
+            tags=[config.VIVIT_RUN_NAME],
+            name=f"{config.VIVIT_RUN_NAME}_run_{run_num}",
             reinit=True,
         ):
             # Train the model

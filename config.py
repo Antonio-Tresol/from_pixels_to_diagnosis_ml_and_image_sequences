@@ -1,3 +1,4 @@
+import pandas as pd
 import torch
 import random
 
@@ -6,19 +7,24 @@ PROJECT = "cs_research"
 VIVIT_MODEL_NAME = "google/vivit-b-16x2-kinetics400"
 CONVNEXT_MODEL_NAME = "facebook/convnext-tiny-224"
 RUN_NAME_CONVNEXT = f"convnext_{random.randint(0, 9999)}"
-RUN_NAME = f"vivit_{random.randint(0, 9999)}"
+VIVIT_RUN_NAME = f"vivit_{random.randint(0, 9999)}"
 DEVICE = "cuda" if torch.cuda.is_available() else "cpu"
 
 # General constants
 DATASET_DIR = "dataset"
+DATASET_INFO = pd.read_csv("dataset/hemorrhage_diagnosis_per_slice.csv")
 
 VIVIT_SAVE_DATASET_DIR = f"vivit_saved_{DATASET_DIR}"
-VIVIT_SHALL_SAVE_DATASET = True
-VIVIT_LOCAL_METRICS_DIR = "vivit_metrics"
-VIVIT_CHECKPOINT_DIR = "vivit_model_checkpoints"
+VIVIT_LOCAL_METRICS_DIR = "vivit_metrics_new"
+VIVIT_CHECKPOINT_DIR = "vivit_model_checkpoints_new"
+VIVIT_METRICS = "vivit_validation_metrics_all_runs.csv"
+VIVIT_CM = "vivit_cm_run_"
 
 CONVNEXT_SAVE_DATASET_DIR = f"convnext_saved_{DATASET_DIR}"
-CONVNEXT_SHALL_SAVE_DATASET = False
+CONVNEXT_LOCAL_METRICS_DIR = "convnext_metrics_new"
+CONVNEXT_CHECKPOINT_DIR = "convnext_model_checkpoints_new"
+CONVNEXT_METRICS = "convnext_validation_metrics_all_runs.csv"
+CONVNEXT_CM = "convnext_cm_run_"
 
 TEST_SIZE = 0.3
 SEED = 42
@@ -42,7 +48,7 @@ LOGGING_STEPS = 10
 
 # Other constants
 EVAL_STRATEGY = "epoch"
-EVAL_STEPS = 10
+EVAL_STEPS = 1
 WARMUP_STEPS = int(0.1 * 20)
 SCHEDULER = "linear"
 SMALL_FLOATING_POINT = True

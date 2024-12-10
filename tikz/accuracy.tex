@@ -1,0 +1,105 @@
+% This file was created with tikzplotlib v0.10.1.
+\begin{tikzpicture}
+
+\definecolor{darkgray176}{RGB}{176,176,176}
+\definecolor{dimgray95}{RGB}{95,95,95}
+\definecolor{mediumaquamarine115206170}{RGB}{115,206,170}
+\definecolor{mediumaquamarine116180200}{RGB}{116,180,200}
+
+\begin{axis}[
+tick align=outside,
+tick pos=left,
+title={Distribution of Accuracy Performance Metrics},
+x grid style={darkgray176},
+xlabel={Model},
+xmajorgrids,
+xmin=-0.5, xmax=1.5,
+xtick style={color=black},
+xtick={0,1},
+xticklabels={ViVit,ConvNext},
+y grid style={darkgray176},
+ylabel={Score},
+ymajorgrids,
+ymin=0.462, ymax=0.858,
+ytick style={color=black},
+ytick={0.45,0.5,0.55,0.6,0.65,0.7,0.75,0.8,0.85,0.9},
+yticklabels={
+  \(\displaystyle {0.45}\),
+  \(\displaystyle {0.50}\),
+  \(\displaystyle {0.55}\),
+  \(\displaystyle {0.60}\),
+  \(\displaystyle {0.65}\),
+  \(\displaystyle {0.70}\),
+  \(\displaystyle {0.75}\),
+  \(\displaystyle {0.80}\),
+  \(\displaystyle {0.85}\),
+  \(\displaystyle {0.90}\)
+}
+]
+\path [draw=dimgray95, fill=mediumaquamarine115206170]
+(axis cs:-0.4,0.68)
+--(axis cs:0.4,0.68)
+--(axis cs:0.4,0.75)
+--(axis cs:-0.4,0.75)
+--(axis cs:-0.4,0.68)
+--cycle;
+\addplot [dimgray95]
+table {%
+0 0.68
+0 0.64
+};
+\addplot [dimgray95]
+table {%
+0 0.75
+0 0.84
+};
+\addplot [dimgray95]
+table {%
+-0.2 0.64
+0.2 0.64
+};
+\addplot [dimgray95]
+table {%
+-0.2 0.84
+0.2 0.84
+};
+\path [draw=dimgray95, fill=mediumaquamarine116180200]
+(axis cs:0.6,0.57)
+--(axis cs:1.4,0.57)
+--(axis cs:1.4,0.64)
+--(axis cs:0.6,0.64)
+--(axis cs:0.6,0.57)
+--cycle;
+\addplot [dimgray95]
+table {%
+1 0.57
+1 0.48
+};
+\addplot [dimgray95]
+table {%
+1 0.64
+1 0.68
+};
+\addplot [dimgray95]
+table {%
+0.8 0.48
+1.2 0.48
+};
+\addplot [dimgray95]
+table {%
+0.8 0.68
+1.2 0.68
+};
+\addplot [dimgray95]
+table {%
+-0.4 0.7
+0.4 0.7
+};
+\addplot [dimgray95]
+table {%
+0.6 0.62
+1.4 0.62
+};
+\end{axis}
+
+\end{tikzpicture}
