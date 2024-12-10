@@ -1,7 +1,4 @@
-import evaluate
-import numpy as np
 from transformers import ConvNextForImageClassification, ConvNextConfig
-import torch
 from datasets import Dataset
 
 
@@ -21,5 +18,3 @@ def initialize_convnext(
         config=config,
         ignore_mismatched_sizes=True,
     ).to(device)
-
-

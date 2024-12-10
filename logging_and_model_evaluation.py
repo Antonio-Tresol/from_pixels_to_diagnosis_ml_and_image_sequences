@@ -1,11 +1,12 @@
 import evaluate
 import numpy as np
 import wandb
+from transformers import EvalPrediction
 
 vivit_eval_metrics = evaluate.combine(["accuracy", "precision", "recall"])
 
 
-def vivit_compute_metrics(p) -> dict:
+def vivit_compute_metrics(p: EvalPrediction) -> dict:
     preds = np.argmax(p.predictions, axis=1)
     labels = p.label_ids
 
@@ -19,7 +20,7 @@ def vivit_compute_metrics(p) -> dict:
 convnext_eval_metrics = evaluate.combine(["accuracy", "precision", "recall"])
 
 
-def convnext_compute_metrics(p) -> dict:
+def convnext_compute_metrics(p: EvalPrediction) -> dict:
     preds = np.argmax(p.predictions, axis=1)
     labels = p.label_ids
 
