@@ -1,0 +1,36 @@
+The following metrics were used to evaluate the models efficacy:
+
+\subsubsection{Confusion Matrix}
+
+A confusion matrix is a table used to evaluate the performance of a classification algorithm. It compares the actual target values with those predicted by the model. The matrix is typically organized as follows:
+
+\begin{itemize}
+    \item \textbf{True Positive (TP)}: The number of cases where the patient had ICH and the model correctly predicted it.
+    \item \textbf{False Positive (FP)}: The number of cases where the patient did not have ICH and the model predicted it did.
+    \item \textbf{True Negative (TN)}: The number of cases where the patient did not have ICH and the model correctly predicted it.
+    \item \textbf{False Negative (FN)}: The number of cases where the patient had ICH and the model predicted it did not.
+\end{itemize}
+
+% Commented to make it more concise
+% Using the values from the confusion matrix, several performance metrics can be calculated, such as the accuracy, precision and recall.
+
+\subsubsection{Accuracy}
+It represents the ratio of correctly predicted instances to the total number of instances in the dataset. Mathematically, accuracy can be defined as:
+
+\begin{equation*}
+    \text{Accuracy} = \frac{TP + TN}{TP + TN + FP + FN}
+\end{equation*}
+
+\subsubsection{Precision}
+It measures the accuracy of positive predictions made by the model, indicating the proportion of instances classified as positive that are actually positive. Mathematically, precision can be defined as:
+
+\begin{equation*}
+    \text{Precision} = \frac{TP}{TP + FP}
+\end{equation*}
+
+\subsubsection{Recall}
+Recall, also known as sensitivity or true positive rate, is a metric used to evaluate the performance in scenarios where the focus is on correctly identifying positive instances. It calculates the proportion of actual positive instances that were correctly identified by the model. Mathematically, recall can be defined as:
+
+\begin{equation*}
+    \text{Recall} = \frac{TP}{TP + FN}
+\end{equation*}

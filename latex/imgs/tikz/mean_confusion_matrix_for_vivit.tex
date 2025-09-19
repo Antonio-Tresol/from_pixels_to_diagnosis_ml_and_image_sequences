@@ -1,0 +1,49 @@
+% This file was created with tikzplotlib v0.10.1.
+\begin{tikzpicture}
+
+\definecolor{darkgray176}{RGB}{176,176,176}
+\definecolor{darkslategray38}{RGB}{38,38,38}
+
+\begin{axis}[
+tick align=outside,
+tick pos=left,
+title={Mean Confusion Matrix for ViViT},
+x grid style={darkgray176},
+xlabel={Predicted Label},
+xmin=0, xmax=2,
+xtick style={color=black},
+xtick={0.5,1.5},
+xticklabels={Negative,Positive},
+y dir=reverse,
+y grid style={darkgray176},
+ylabel={True Label},
+ymin=0, ymax=2,
+ytick style={color=black},
+ytick={0.5,1.5},
+yticklabel style={rotate=90.0},
+yticklabels={Negative,Positive}
+]
+\addplot graphics [includegraphics cmd=\pgfimage,xmin=0, xmax=2, ymin=2, ymax=0] {imgs/tikz/mean_confusion_matrix_for_vivit-000.png};
+\draw (axis cs:0.5,0.5) node[
+  scale=0.9,
+  text=white,
+  rotate=0.0
+]{11.20};
+\draw (axis cs:1.5,0.5) node[
+  scale=0.9,
+  text=darkslategray38,
+  rotate=0.0
+]{3.00};
+\draw (axis cs:0.5,1.5) node[
+  scale=0.9,
+  text=darkslategray38,
+  rotate=0.0
+]{4.10};
+\draw (axis cs:1.5,1.5) node[
+  scale=0.9,
+  text=darkslategray38,
+  rotate=0.0
+]{6.70};
+\end{axis}
+
+\end{tikzpicture}

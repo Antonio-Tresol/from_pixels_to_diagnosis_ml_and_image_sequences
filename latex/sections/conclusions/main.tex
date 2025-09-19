@@ -1,0 +1,30 @@
+This section outlines the key findings from our experiments, highlights the main contributions and impact of this study on both ICH classification and the use of video models in medical contexts, and provides recommendations for future research aimed at building upon these findings.
+
+ViVit's superior performance in accuracy and recall can be attributed to its ability to model temporal information inherent in video sequences. This temporal dimension likely played a significant role in ViVit's strong classification results, as it was able to capture the dynamics of ICH progression across time, which may be challenging for models that only analyze individual frames.
+
+On the other hand, ConvNeXt, trained on individual images rather than image sequences, faced challenges due to the imbalanced nature of the dataset. The model was exposed to a disproportionate number of negative cases compared to positive ones, which likely contributed to its lower performance in terms of recall and overall misclassification of ICH cases. This imbalance could be alleviated by adopting methods such as data augmentation, oversampling, or using a loss function that accounts for class imbalance.
+
+Even state-of-the-art image models like ConvNeXt can struggle with tasks requiring temporal understanding. ConvNeXt, optimized for single-image classification, is not inherently suited for image sequence analysis. This highlights a key limitation when applying standard image models to dynamic, time-dependent tasks like medical sequence classification. Future research may benefit from focusing on models designed for temporal information, such as video models or multi-view models.
+
+To overcome the challenges observed in this study, future experiments should explore alternative approaches. One direction is to use ensemble models or multi-view architectures that can better handle the temporal and spatial complexities of medical image sequences. Additionally, incorporating larger and more diverse datasets with a greater number of patients would help to improve model generalization and robustness.
+
+Given the potential of video models like ViVit, it would be worthwhile to repeat the experiment using other video-based models and compare their performance against more appropriate models designed for the task. An ensemble or multi-view approach might better suit the needs of medical image sequence classification, providing more robust results and reducing the inherent challenges posed by imbalanced data.
+
+In summary, this study demonstrates the promise of using video models for medical image sequence classification, while also highlighting some limitations of current image-based models like ConvNeXt in this context. Future work should address data imbalance, leverage the temporal dimension of medical sequences, and explore alternative model architectures, such as multi-view or ensemble approaches, to further enhance performance in medical sequence classification tasks.
+
+% Touch subjects like:
+% This results are only applyable to this dataset, however they overall show the potential viable using video models in image sequence classification
+
+% How the temporal dimension may have played an important role on Vivit's good performance
+
+% How ViVits results may had been hindered due to the small amount of data (we were working with like 80 patients)
+
+% How ConvNeXT performance was probably affected by the fact that it was trained on single images and therefore super unbalanced data
+
+% How this higlights some limitations of even state of the art image models like convnext for entire image classification
+
+% How in a future a different approach should be followed to prevent the inherent imbalance of training or
+
+% How is worthwile repeating the experiment on other medical sequence datasets, preferably with a greater ammount of patients
+
+% How is worthwile performing the experiment but this time, comparing a video model to a more appropiate model for the task, like a ensamble or preferably, a multi view model

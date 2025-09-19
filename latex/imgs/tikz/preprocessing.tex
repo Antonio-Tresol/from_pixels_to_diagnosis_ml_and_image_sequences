@@ -1,0 +1,12 @@
+\begin{tikzpicture}[>=latex,shorten >=2pt,shorten <=2pt,shape aspect=1]
+    % Define the rectangle nodes
+    \node (Masks) [rectangle, draw, minimum height=1.8cm, minimum width=3cm, text width=2.5cm, align=center] {Remove mask images};
+    
+    \node (Bones) [rectangle, draw, minimum height=1.8cm, minimum width=3cm, text width=2.5cm, align=center] at ([xshift=3cm]Masks.east) {Remove bone images};
+    
+    \node (Inclusion) [rectangle, draw, minimum height=1.8cm, minimum width=3cm, text width=2.5cm, align=center] at ([xshift=3cm]Bones.east) {Move patients to positive or negative directories};
+
+    % Draw arrows between the nodes
+    \draw[->, thick] (Masks.east) -- (Bones.west);
+    \draw[->, thick] (Bones.east) -- (Inclusion.west);
+\end{tikzpicture}

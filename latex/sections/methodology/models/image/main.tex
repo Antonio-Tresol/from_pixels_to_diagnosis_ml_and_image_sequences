@@ -1,0 +1,8 @@
+For the image model, we selected a pure convolutional-based architecture: ConvNeXt \cite{convnextbro}. This choice, similar to our choice of ViVit, was driven by the recognition that ConvNets represent the current state-of-the-art in image classification \cite{convnextbro}. Moreover, this model not only demonstrated competitive performance against transformers in terms of accuracy and scalability, but also, to the best of our knowledge, had limited research evaluating its performance in ICT classification, reinforcing our decision \cite{convnextbro}.
+
+% Also idk if this is ConvNeXt being used, if not, i´ll change it later (Kenneth)
+The specific ConvNeXt model being used was Facebook’s convenext-tiny-224. As its name suggests, this is a small-scale model designed to deliver good performance while minimizing computational expense. It was pretrained on the ImageNet-1k dataset at a resolution of 224x224, and only the weights of the final layer were modified during training.
+
+Since ConvNeXt is an image model, training was conducted using individual images as input rather than entire sequences. For classification, however, the model processes the complete sequence, classifying it as positive if at least one image is identified as positive. This approach was chosen to minimize false negatives, which are typically more concerning and undesirable than false positives in a medical context.
+
+The model was used with the following parameters, which yielded optimal performance: a validation proportion of 0.3, a learning rate of 0.000005, and a maximum of 20 epochs with early stopping to prevent overfitting.

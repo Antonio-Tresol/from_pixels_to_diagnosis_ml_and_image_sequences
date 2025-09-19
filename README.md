@@ -2,6 +2,27 @@
 
 In this project, we focused on intracranial hemorrhage diagnosis using medical image sequences through state-of-the-art vision models (ViViT and ConvNeXT). We explore how effective video models can be at classifying patients based on a sequence of images.
 
+## 🚀 Quick Start
+
+### For Machine Learning Experiments
+Follow the [ML Setup](#ml-setup-and-usage) section below.
+
+### For LaTeX Paper Compilation (Recommended: Dev Container)
+The easiest way to compile the research paper is using VS Code Dev Containers:
+
+**Prerequisites:**
+- [Docker](https://docs.docker.com/get-docker/)
+- [Visual Studio Code](https://code.visualstudio.com/)
+- [Dev Containers extension](https://marketplace.visualstudio.com/items?itemName=ms-vscode-remote.remote-containers)
+
+**Setup:**
+1. Open this repository in VS Code
+2. Click "Reopen in Container" when prompted (or press `F1` → "Dev Containers: Reopen in Container")
+3. Wait for the container to build (5-10 minutes first time)
+4. Compile: `cd latex && latexmk -pdf main.tex`
+
+The compiled PDF will be at `latex/main.pdf`.
+
 ## Project Overview
 
 This repository contains implementations of two deep learning approaches for hemorrhage diagnosis:
@@ -31,18 +52,39 @@ This repository contains implementations of two deep learning approaches for hem
 ## Project Structure
 
 ```
+├── .devcontainer/          # Development container configuration
+│   ├── Dockerfile          # Custom LaTeX environment
+│   └── devcontainer.json   # VS Code container settings
+├── latex/                  # LaTeX source files for research paper
+│   ├── main.tex           # Main document
+│   ├── configuration.tex  # Package imports and settings
+│   ├── sections/          # Paper sections
+│   ├── references/        # Bibliography files (.bib)
+│   └── imgs/              # Figures and images
 ├── config.py               # Configuration parameters and constants
-├── preview_from_pixels_to_diagnosis_using_machine_learning_to_classify_medical_image_sequences  # a preview of the research paper
+├── preview_from_pixels_to_diagnosis_using_machine_learning_to_classify_medical_image_sequences.pdf  # Research paper preview
 ├── clean.py                # Dataset preprocessing and organization
 ├── vivit_data_handling.py  # Dataset preprocessing for the vivit model
 ├── convnext_data_handling.py  # Dataset preprocessing for convnext model
 ├── vivit_experiment.py     # ViViT model implementation and training
 ├── convnext_experiment.py  # ConvNeXT model implementation and training
 ├── logging_and_model_evaluation.py # Evaluation metrics and logging utilities
+├── convnext_metrics_new/  # ConvNeXT model results
+├── vivit_metrics_new/     # ViViT model results
 └── dataset/                # Directory containing the medical image data
 ```
 
-## Setup and Usage
+## ML Setup and Usage
+
+### Requirements
+
+- Python
+- PyTorch
+- Transformers library
+- pandas
+- numpy
+- wandb (for experiment tracking)
+- evaluate (for metrics computation)
 
 1. Prepare your dataset:
    ```python
@@ -67,6 +109,61 @@ This repository contains implementations of two deep learning approaches for hem
 The project uses the following pre-trained models:
 - ViViT: `google/vivit-b-16x2-kinetics400`
 - ConvNeXT: `facebook/convnext-tiny-224`
+
+## 📝 LaTeX Paper Compilation
+
+### Manual Setup (Advanced Users)
+
+If you prefer not to use Dev Containers, you can set up LaTeX manually:
+
+#### Installing TeX Live
+
+**Ubuntu/Debian:**
+```bash
+sudo apt update
+sudo apt install texlive-full
+```
+
+**macOS:**
+```bash
+# Using MacTeX (recommended)
+brew install --cask mactex
+```
+
+**Windows:**
+Download and install [MiKTeX](https://miktex.org/) or [TeX Live](https://www.tug.org/texlive/)
+
+#### Required LaTeX Packages
+
+```bash
+tlmgr install cite fancyvrb ieeetran paralist csvsimple titlesec soul \
+              markdown adjustbox booktabs multirow pgfplots float natbib \
+              times psnfss xcolor hyperref graphicx amsmath amsfonts amssymb
+```
+
+#### Compilation Commands
+
+```bash
+cd latex
+latexmk -pdf main.tex
+```
+
+### Troubleshooting LaTeX
+
+**Missing packages:**
+```bash
+tlmgr install <package-name>
+```
+
+**Font errors:**
+```bash
+updmap-sys && texhash
+```
+
+**Clean build files:**
+```bash
+latexmk -C
+```
 
 
 ## License

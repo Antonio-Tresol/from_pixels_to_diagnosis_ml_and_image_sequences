@@ -1,0 +1,51 @@
+\documentclass[conference]{IEEEtran}
+\IEEEoverridecommandlockouts
+
+% Configuration
+\input{configuration}
+
+\begin{document}
+
+% Title
+\input{title}
+
+% Abstract
+\begin{abstract}
+\input{abstract}
+\end{abstract}
+
+\begin{IEEEkeywords}
+    Machine learning, computer vision, hemorrhage, classification, video.
+\end{IEEEkeywords}
+
+% Introduction
+\section{Introduction}
+\input{sections/introduction/main}
+
+% Theorethical context
+\section{Background}
+\input{sections/background/main}
+
+\section{Related work}
+\input{sections/related_work/main}
+
+% Methodology
+\section{Methodology}
+\input{sections/methodology/main}
+
+% Results
+\section{Results and analysis}
+\input{sections/results/main}
+
+% Conclusions
+\section{Conclusions}
+\input{sections/conclusions/main}
+
+\bibliographystyle{IEEEtran}
+\bibliography{references/context, references/datasets, references/domain, references/models}
+
+\newpage
+\section{Appendix}
+\input{sections/appendix/main}
+
+\end{document}

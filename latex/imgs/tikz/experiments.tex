@@ -1,0 +1,20 @@
+\begin{tikzpicture}[>=latex,shorten >=2pt,shorten <=2pt,shape aspect=1]
+    % Define the rectangle nodes
+    \node (Preprocessing) [rectangle, draw, minimum height=1.8cm, minimum width=3cm, text width=2.5cm, align=center] {Preprocessing};
+    
+    \node (Environment) [rectangle, draw, minimum height=1.8cm, minimum width=3cm, text width=2.5cm, align=center] at ([xshift=3cm]Preprocessing.east) {Environment setting};
+    
+    \node (Training) [rectangle, draw, minimum height=1.8cm, minimum width=3cm, text width=2.5cm, align=center] at ([xshift=3cm]Environment.east) {Training};
+
+    \node (Testing) [rectangle, draw, minimum height=1.8cm, minimum width=3cm, text width=2.5cm, align=center] at ([xshift=3cm]Training.east) {Testing};
+
+    \node (Statistical) [rectangle, draw, minimum height=1.8cm, minimum width=3cm, text width=2.5cm, align=center] at ([xshift=3cm]Testing.east) {Statistical analysis};
+
+    % Draw arrows between the nodes
+    \draw[->, thick] (Preprocessing.east) -- (Environment.west);
+    \draw[->, thick] (Environment.east) -- (Training.west);
+    \draw[->, thick] (Training.east) -- (Testing);
+    \draw[->, thick] (Testing.east) -- (Statistical.west);
+    \draw[->, thick, out=150, in=30, looseness=1.2] 
+        (Testing.north) to node[above, sloped] {10 replicates} (Training.north);
+\end{tikzpicture}
