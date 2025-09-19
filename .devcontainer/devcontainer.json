@@ -1,0 +1,78 @@
+// For format details, see https://aka.ms/devcontainer.json. For config options, see the
+// README at: https://github.com/devcontainers/templates/tree/main/src/debian
+{
+	"name": "LaTeX Research Environment",
+	// Use our custom Dockerfile with full TeX Live installation
+	"build": {
+		"dockerfile": "Dockerfile"
+	},
+	// Features to add to the dev container
+	"features": {
+		"ghcr.io/va-h/devcontainers-features/uv:1": {}
+	},
+	// Configure VS Code specific properties
+	"customizations": {
+		"vscode": {
+			"extensions": [
+				// LaTeX support
+				"James-Yu.latex-workshop",
+				// PDF viewer
+				"tomoki1207.pdf",
+				// Spell checking
+				"streetsidesoftware.code-spell-checker",
+				// Git support
+				"mhutchie.git-graph",
+				// File icons
+				"vscode-icons-team.vscode-icons",
+				// Markdown support
+				"yzhang.markdown-all-in-one"
+			],
+			"settings": {
+				// LaTeX Workshop configuration
+				"latex-workshop.latex.tools": [
+					{
+						"name": "latexmk",
+						"command": "latexmk",
+						"args": [
+							"-pdf",
+							"-interaction=nonstopmode",
+							"-synctex=1",
+							"-outdir=%OUTDIR%",
+							"%DOC%"
+						]
+					}
+				],
+				"latex-workshop.latex.recipes": [
+					{
+						"name": "latexmk 🔃",
+						"tools": [
+							"latexmk"
+						]
+					}
+				],
+				"latex-workshop.view.pdf.viewer": "tab",
+				"latex-workshop.latex.autoBuild.run": "never",
+				// File associations
+				"files.associations": {
+					"*.tex": "latex"
+				},
+				// Terminal configuration
+				"terminal.integrated.defaultProfile.linux": "bash",
+				// Git configuration
+				"git.autofetch": true,
+				// Editor configuration for LaTeX
+				"editor.wordWrap": "on",
+				"editor.rulers": [
+					80,
+					120
+				]
+			}
+		}
+	},
+	// Set the default user
+	"remoteUser": "vscode",
+	// Port forwarding (if needed for any web-based tools)
+	"forwardPorts": [],
+	// Post-create command to set up and test the environment
+	"postCreateCommand": "echo 'Setting up LaTeX environment...' && /workspace/.devcontainer/test-latex.sh && echo 'Environment ready! Use: cd latex && latexmk -pdf main.tex to compile'"
+}
