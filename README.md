@@ -32,12 +32,13 @@ This repository contains implementations of two deep learning approaches for hem
 
 ## Features
 
-- Automated dataset preprocessing and organization.
-- Implementation of both ViViT and ConvNeXT models.
-- Patient-level and image-level prediction capabilities.
-- Comprehensive evaluation metrics (accuracy, precision, recall).
-- Integration with Weights & Biases (wandb) for experiment tracking.
-- Confusion matrix visualization for model performance analysis.
+- Modern Python project structure with `pyproject.toml` and `uv` package manager
+- Automated dataset preprocessing and organization
+- Implementation of both ViViT and ConvNeXT models
+- Patient-level and image-level prediction capabilities
+- Comprehensive evaluation metrics (accuracy, precision, recall)
+- Integration with Weights & Biases (wandb) for experiment tracking
+- Confusion matrix visualization for model performance analysis
 
 ## Requirements
 
@@ -61,6 +62,7 @@ This repository contains implementations of two deep learning approaches for hem
 │   ├── sections/          # Paper sections
 │   ├── references/        # Bibliography files (.bib)
 │   └── imgs/              # Figures and images
+├── pyproject.toml          # Python project configuration and dependencies
 ├── config.py               # Configuration parameters and constants
 ├── preview_from_pixels_to_diagnosis_using_machine_learning_to_classify_medical_image_sequences.pdf  # Research paper preview
 ├── clean.py                # Dataset preprocessing and organization
@@ -76,33 +78,59 @@ This repository contains implementations of two deep learning approaches for hem
 
 ## ML Setup and Usage
 
-### Requirements
+### Prerequisites
 
-- Python
-- PyTorch
-- Transformers library
-- pandas
-- numpy
-- wandb (for experiment tracking)
-- evaluate (for metrics computation)
+- Python 3.13+
+- [uv](https://docs.astral.sh/uv/getting-started/installation/) package manager
 
-1. Prepare your dataset:
-   ```python
-   python clean.py
+### Setup
+
+1. **Install uv** (if not already installed):
+   ```bash
+   # On macOS and Linux
+   curl -LsSf https://astral.sh/uv/install.sh | sh
+   
+   # On Windows
+   powershell -c "irm https://astral.sh/uv/install.ps1 | iex"
+   
+   # Or with pip
+   pip install uv
    ```
 
-2. Run experiments:
+2. **Install dependencies** using uv and pyproject.toml:
+   ```bash
+   uv sync
+   ```
 
+3. **Prepare your dataset:**
+   ```bash
+   uv run clean.py
+   ```
 
-   make sure you have a `key.py` file with you wandb api key and that you changed the project name in the `config.py` file. Then
+4. **Run experiments:**
+   
+   Make sure you have a `key.py` file with your wandb API key and that you changed the project name in the `config.py` file. Then:
+   
    - For ViViT model:
-     ```python
-     python vivit_experiment.py
+     ```bash
+     uv run vivit_experiment.py
      ```
    - For ConvNeXT model:
-     ```python
-     python convnext_experiment.py
+     ```bash
+     uv run convnext_experiment.py
      ```
+
+### Adding New Dependencies
+
+To add new packages to the project:
+```bash
+uv add <package-name>
+```
+
+To add development dependencies:
+```bash
+uv add --dev <package-name>
+```
 
 ## Model Configuration
 
