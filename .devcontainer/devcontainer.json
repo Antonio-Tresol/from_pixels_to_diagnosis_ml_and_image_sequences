@@ -18,14 +18,8 @@
 				"James-Yu.latex-workshop",
 				// PDF viewer
 				"tomoki1207.pdf",
-				// Spell checking
-				"streetsidesoftware.code-spell-checker",
-				// Git support
-				"mhutchie.git-graph",
-				// File icons
-				"vscode-icons-team.vscode-icons",
-				// Markdown support
-				"yzhang.markdown-all-in-one"
+				// spell checking
+				"streetsidesoftware.code-spell-checker"
 			],
 			"settings": {
 				// LaTeX Workshop configuration
@@ -69,10 +63,10 @@
 			}
 		}
 	},
-	// Set the default user
-	"remoteUser": "vscode",
+	// Set the default user (root for our optimized image)
+	"remoteUser": "root",
 	// Port forwarding (if needed for any web-based tools)
 	"forwardPorts": [],
-	// Post-create command to set up and test the environment
-	"postCreateCommand": "echo 'Setting up LaTeX environment...' && /workspace/.devcontainer/test-latex.sh && echo 'Environment ready! Use: cd latex && latexmk -pdf main.tex to compile'"
+	// Post-create command to test the environment
+	"postCreateCommand": "echo 'LaTeX environment ready! Use: cd latex && latexmk -pdf main.tex to compile your paper' && pdflatex --version"
 }

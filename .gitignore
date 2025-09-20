@@ -17,3 +17,19 @@ vivit_model_checkpoints/*
 convnext_model_checkpoints/*
 vivit_model_checkpoints_new/*
 convnext_model_checkpoints_new/*
+
+# LaTeX compilation artifacts
+*.aux
+*.bbl
+*.blg
+*.fdb_latexmk
+*.fls
+*.log
+*.out
+*.synctex.gz
+*.toc
+*.lof
+*.lot
+*.nav
+*.snm
+*.vrb
