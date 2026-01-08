@@ -15,13 +15,12 @@ Non contrast computed tomography (NCCT) is usually the preferred methodology for
 Machine learning models have emerged as an efficient alternative for reducing costs and time, enabling the automatic identification of brain lesions \cite{9332131}. In the context of early detection of ICH, commonly used techniques include support vector machines (SVM) \cite{Thabarsa2023299}, random forests, k-nearest neighbors (KNN), multilayer perceptrons (MLP) \cite{Seymour2022}, as well as convolutional neural networks (CNNs) in both 2D \cite{Zhong2021} and 3D forms \cite{10347693}. While many deep learning approaches focus on segmentation tasks \cite{ABRAMOVA2021101908, Yu2022}, others are geared towards prediction or classification \cite{Ma2022}.
 
 To the best of our knowledge, most studies use a slice per patient as input for the models. Grewal et al. \cite{8363574} is the only study that makes predictions based on multiple images of the brain hemorrhage in this context, which uses a LSTM with a CNN. 
-
 % TODO: why is it important to use multiple images in this context, what might be the value of it. Limitation of the single images.
 % TODO: maybe multiview need a little explanation here fast
 Since doctors have to analyze multiple images (slices) to diagnose the patient's condition \cite{Thabarsa2023299}, we were motivated by the models that consider several slices per patient to assess whether or not they produce more accurate results. This was further suggested by studies that have tried so in different medical areas like breast cancer \cite{sarker2024mvswintmammogramclassificationmultiview, swint_multiview, hybrid_mammo_net} or cardiology \cite{JMAI5205}.
 
 
-In this article, we propose a novel comparison for classifying patients with intracranial hemorrhage using a video-based classification model and a state-of-the-art image model. We wanted to explore if incorporating a temporal dimension by using a video model will produce favorable findings. In order to maintain as much fairness as possible, both models will classify sequences of X-ray CT images captured from various sections of the brain. However, the image model will be trained using all the images independently instead of sequences as input.
+In this article, we propose a novel comparison for classifying patients with intracranial hemorrhage using a video-based classification model and a state-of-the-art image model. We wanted to explore if incorporating a temporal dimension by using a video model would produce favorable findings. In order to maintain as much fairness as possible, both models will classify sequences of X-ray CT images captured from various sections of the brain. However, the image model is trained using all the images independently instead of sequences as input.
 
 % In this article we propose a novel approach to classify patients with intracranial hemorrhage using multiview and video classification models. Multiview models use different data inputs called views of the same object to classify. Video models take a sequence of images including the temporal dimension into account to make a decision. The input for the models will be a sequences of x-ray CT images taken from different brain regions.
 
@@ -33,5 +32,3 @@ Our video model achieves a mean accuracy of 0.72 and a mean multiclass recall of
 % Structure
 
 The structure of this paper is as follows. We begin by introducing the relevant background, followed by a review of the related work in this field. Next, we present the methodology for comparing image models with video classification models, detailing the the experimental setup. Following that, we report and analyze the results, applying our chosen methodology to assess whether the data supports our initial hypothesis. Lastly, we contextualize our findings within the current state of the art, highlighting their relevance, and suggest directions for future research in this domain.
-
-Following this structure, we shall proceed by exploring the background of the study.
