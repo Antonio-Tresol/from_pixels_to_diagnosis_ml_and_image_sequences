@@ -4,7 +4,7 @@ As discussed in the methodology, each model underwent 10 replicates, comprising 
 
 Additionally, it is worth mentioning that multiclass precision and recall were used, as these metrics provide a more comprehensive view of both model's performance, evaluating their ability to classify both positive and negative cases.
 
-First, the results of each model and metric were analyzed via a Shapiro-Wilk test for normality. Table \ref{tab:shapiro_results} shows the results of the test. For ViVit, all metrics showed a possible normal distribution for an $\alpha = 0.05$. Nevertheless for ConvNeXt, precision wasn't normally distributed.
+First, the results of each model and metric were analysed via a Shapiro-Wilk test for normality. Table \ref{tab:shapiro_results} shows the results of the test. For ViVit, all metrics showed a possible normal distribution for an $\alpha = 0.05$. Nevertheless for ConvNeXt, precision wasn't normally distributed.
 
 \begin{table}[h]
     \centering
@@ -135,7 +135,7 @@ This results suggests that although ConvNeXt may have had a greater potential fo
 
 Once again, Figure \ref{fig:recall_bloxplot} shows a boxplot representation of each model’s performance, this time on the recall metric. The results are similar to those in Figure \ref{fig:accuracy_bloxplot}, with ViVit showing higher minimum, maximum, and median values than ConvNeXT. Although ConvNeXT exhibits lower variance, all its observations fall below 0.4, while most of ViVit's observations exceed this threshold. This indicates poorer performance by ConvNeXT, as the consistently low recall values may indicate a higher tendency for the model to misclassify sequences.
 
-Table \ref{tab:min_max_metrics} provides a summary of the results shown in the boxplots, detailing the specific minimum and maximum values achieved by each model. Notably, Meanwhile, Table \ref{tab:mean_metrics} highlights the mean values, emphasizing ViVit's superiority across all three metrics. However, it is important to note that the mean scores were significantly influenced by outliers.
+Table \ref{tab:min_max_metrics} provides a summary of the results shown in the boxplots, detailing the specific minimum and maximum values achieved by each model. Table \ref{tab:mean_metrics} highlights the mean values, where ViVit scored higher across all three metrics. It is worth noting that the mean scores were influenced by outliers in some runs.
 
 \begin{table}[h]
     \centering
@@ -189,4 +189,4 @@ On the other hand, Figures \ref{fig:mean_cm_vivit} and \ref{fig:mean_cm_ConvNeXt
 
 Additionally, ViVit correctly predicted positive cases more than four times as often as ConvNeXt. However, it is also notable that ConvNeXt correctly predicted more negative cases than ViVit and produced six times fewer false positives.
 
-% Having correctly analyzed the results obtained, we now proceed to draw our conclusions and offer recommendations for future studies on ICH sequence classification.
+These results should be considered in light of the different effective class distributions each model faced during training. ViVit received patient-level sequences where the class ratio was approximately 1:1.1 (positive to negative), while ConvNeXt received individual slices where approximately 90\% were negative. This imbalance is inherent to how each model consumes the data --- not a flaw in the experimental design. It does, however, likely explain ConvNeXt's tendency to predict the majority class, yielding high accuracy but very low recall. The dataset is also limited to 82 patients from a single hospital, which constrains the generalisability of these findings. These factors mean that the observed performance gap may reflect differences in training conditions as much as differences in architectural capability.

@@ -10,14 +10,32 @@ After the initial preprocessing was done, additional data handling was performed
 % Commented as requested by the teacher
 % \subsubsection{Environment}
 
-The server used for running the experiments was composed of 2 Intel(R) Xeon(R) Gold 6240 CPU @ 2.60GHz, 2 NVIDIA Tesla V100S PCIE-32GB, 256Gb RAM, and 3TB storage. The server runned Clear Linux and used Slurm, a workload manager that allows users to schedule jobs and manage clusters of nodes. It also had access to a variety of software applications, including CUDA and Miniconda. For these experiments, a conda environment was set with pytorch.
+The server used for running the experiments was composed of 2 Intel(R) Xeon(R) Gold 6240 CPU @ 2.60GHz, 2 NVIDIA Tesla V100S PCIE-32GB, 256Gb RAM, and 3TB storage. The server ran Clear Linux and used Slurm, a workload manager that allows users to schedule jobs and manage clusters of nodes. It also had access to a variety of software applications, including CUDA and Miniconda. For these experiments, a conda environment was set with pytorch.
 
 % Commented as requested by the teacher
 % \subsubsection{Scenarios}
 
-Each run consisted of a training session followed by a testing session. In the training sessions, the dataset was randomly divided into a training subset and a validation subset, adhering to the proportions specified for each model. The model was then trained on the training subset for its designated number of epochs, optimizing its ability to classify ICT. In the testing session, the model's classification performance was evaluated using the validation subset, with all relevant metrics recorded. The experiment comprised a total of 10 replicates for model.
+Each run consisted of a training session followed by a testing session. In the training sessions, the dataset was randomly divided into a training subset and a validation subset, adhering to the proportions specified for each model. The model was then trained on the training subset for its designated number of epochs, optimising its ability to classify ICT. In the testing session, the model's classification performance was evaluated using the validation subset, with all relevant metrics recorded. The experiment comprised a total of 10 replicates for model.
 
-As previously mentioned, ViVit was trained using image sequences (specifically of 32 frames) as input, aligning with its design as a video model capable of processing sequential data. In contrast, ConvNeXT was trained on individual images, as its structure as an image-based model does not support sequence-based training. This approach results in a larger training dataset for ConvNeXT compared to ViVit, which may had introduced bias. However, this strategy was maintained to ensure an objective comparison of their performance on this dataset and avoid introducing further experimental noise by manipulating data differently for each model.
+As previously mentioned, ViVit was trained using image sequences (specifically of 32 frames) as input, aligning with its design as a video model capable of processing sequential data. In contrast, ConvNeXT was trained on individual images, as its structure as an image-based model does not support sequence-based training. This approach results in a larger training dataset for ConvNeXT compared to ViVit, which may have introduced bias. However, this strategy was maintained to ensure an objective comparison of their performance on this dataset and avoid introducing further experimental noise by manipulating data differently for each model.
 
 % Commented to make it more concise
 % In testing, ViVit's performance was evaluated based on its ability to classify entire image sequences. ConvNeXT, however, required a slightly different approach: it received an entire image sequence but classified each image individually. A sequence was then classified as positive if at least one image within it was classified as positive; otherwise, it was classified as negative. This approach was chosen to minimize false negatives, which are particularly concerning in medical applications.
+
+Table \ref{tab:computational_cost} summarises the computational cost observed during the experiments. ViVit processes fewer but larger inputs (18-frame sequences), resulting in lower throughput. ConvNeXt processes individual slices and achieves higher throughput, though its total training time per run is comparable due to the larger number of samples.
+
+\begin{table}[h]
+    \centering
+    \caption{Computational cost per model (mean across 10 runs).}
+    \renewcommand{\arraystretch}{1.5}
+    \begin{tabular}{|c|c|c|c|c|}
+        \hline
+        \textbf{Model} & \textbf{Params} & \textbf{Train time} & \textbf{Train s/s} & \textbf{Eval s/s} \\ \hline
+        ViVit & 87.6M & $\sim$39 min & 0.49 & 0.71 \\ \hline
+        ConvNeXt & 27.8M & $\sim$42 min & 8.6 & 12.7 \\ \hline
+    \end{tabular}
+    \begin{center}
+        \parbox{\columnwidth}{\centering \footnotesize \textbf{Note:} Train s/s and Eval s/s refer to samples per second during training and evaluation, respectively. All runs were executed on a Tesla V100S-PCIE-32GB.}
+    \end{center}
+    \label{tab:computational_cost}
+\end{table}

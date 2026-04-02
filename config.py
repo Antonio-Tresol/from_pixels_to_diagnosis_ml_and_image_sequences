@@ -8,7 +8,7 @@ VIVIT_MODEL_NAME = "google/vivit-b-16x2-kinetics400"
 CONVNEXT_MODEL_NAME = "facebook/convnext-tiny-224"
 RUN_NAME_CONVNEXT = f"convnext_{random.randint(0, 9999)}"
 VIVIT_RUN_NAME = f"vivit_{random.randint(0, 9999)}"
-DEVICE = "cuda" if torch.cuda.is_available() else "cpu"
+DEVICE = "cuda" if torch.cuda.is_available() else ("mps" if torch.backends.mps.is_available() else "cpu")
 
 # General constants
 DATASET_DIR = "dataset"
@@ -31,6 +31,9 @@ SEED = 42
 EPOCHS = 20
 TRAIN_BATCH = 10
 EVAL_BATCH = 10
+VIVIT_TRAIN_BATCH = 2
+VIVIT_EVAL_BATCH = 2
+VIVIT_GRAD_ACCUM = 5  # effective batch = 2 * 5 = 10
 WEIGHT_DECAY = 0.01
 TRAINING_DIR = "/tmp/results"
 
@@ -51,5 +54,5 @@ EVAL_STRATEGY = "epoch"
 EVAL_STEPS = 1
 WARMUP_STEPS = int(0.1 * 20)
 SCHEDULER = "linear"
-SMALL_FLOATING_POINT = True
-REPLICATES = 10
+SMALL_FLOATING_POINT = torch.cuda.is_available()
+REPLICATES = 1  # Set to 10 for full experiment

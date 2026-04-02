@@ -3,6 +3,7 @@ dataset_mini/*
 env.yml
 wandb/*
 key.py
+.env
 model
 __pycache__/*
 saved_dataset_mini/*
