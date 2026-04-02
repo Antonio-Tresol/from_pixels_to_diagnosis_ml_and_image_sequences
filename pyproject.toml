@@ -7,9 +7,10 @@ dependencies = [
     "datasets",
     "evaluate",
     "pandas",
-    "pytorch",
+    "torch",
     "scikit-learn",
     "torchvision",
     "transformers",
     "wandb",
+    "nibabel>=5.4.2",
 ]

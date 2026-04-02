@@ -38,8 +38,9 @@ def create_training_arguments(run_num: int, seed: int) -> TrainingArguments:
     return TrainingArguments(
         output_dir=f"{config.TRAINING_DIR}_run_{run_num}",
         num_train_epochs=config.EPOCHS,
-        per_device_train_batch_size=config.TRAIN_BATCH,
-        per_device_eval_batch_size=config.EVAL_BATCH,
+        per_device_train_batch_size=config.VIVIT_TRAIN_BATCH,
+        per_device_eval_batch_size=config.VIVIT_EVAL_BATCH,
+        gradient_accumulation_steps=config.VIVIT_GRAD_ACCUM,
         learning_rate=config.LEARNING_RATE,
         weight_decay=config.WEIGHT_DECAY,
         logging_dir=f"{config.LOGGING_DIR}_run_{run_num}",
