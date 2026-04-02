@@ -1,16 +1,20 @@
+# Data
 dataset/*
 dataset_mini/*
-env.yml
-wandb/*
+physionet.org/
+
+# Secrets
 key.py
 .env
-physionet.org/
-model
-__pycache__/*
+
+# Python
+__pycache__/
+.venv/
+*.pyc
+
+# Saved datasets and checkpoints
 saved_dataset_mini/*
 saved_dataset/*
-training_job.sh
-cs_research.out
 vivit_saved_dataset_mini/*
 vivit_saved_dataset/*
 convnext_saved_dataset_mini/*
@@ -19,6 +23,13 @@ vivit_model_checkpoints/*
 convnext_model_checkpoints/*
 vivit_model_checkpoints_new/*
 convnext_model_checkpoints_new/*
+
+# Experiment artifacts
+wandb/*
+env.yml
+model
+training_job.sh
+cs_research.out
 
 # LaTeX compilation artifacts
 *.aux

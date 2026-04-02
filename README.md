@@ -2,7 +2,7 @@
 
 In this project, we focused on intracranial hemorrhage diagnosis using medical image sequences through state-of-the-art vision models (ViViT and ConvNeXT). We explore how effective video models can be at classifying patients based on a sequence of images.
 
-## 🚀 Quick Start
+## Quick Start
 
 ### For Machine Learning Experiments
 Follow the [ML Setup](#ml-setup-and-usage) section below.
@@ -17,63 +17,54 @@ The easiest way to compile the research paper is using VS Code Dev Containers:
 
 **Setup:**
 1. Open this repository in VS Code
-2. Click "Reopen in Container" when prompted (or press `F1` → "Dev Containers: Reopen in Container")
+2. Click "Reopen in Container" when prompted (or press `F1` -> "Dev Containers: Reopen in Container")
 3. Wait for the container to build (5-10 minutes first time)
-4. Compile: `cd latex && latexmk -pdf main.tex`
+4. Compile: `cd paper && latexmk -pdf main.tex`
 
-The compiled PDF will be at `latex/main.pdf`.
+The compiled PDF will be at `paper/main.pdf`.
 
 ## Project Overview
 
 This repository contains implementations of two deep learning approaches for hemorrhage diagnosis:
 
 - ViViT (Video Vision Transformer): Processes sequences of medical images to make predictions.
-- ConvNeXT: Analyzes individual images and aggregates results for patient-level diagnosis.
-
-## Features
-
-- Modern Python project structure with `pyproject.toml` and `uv` package manager
-- Automated dataset preprocessing and organization
-- Implementation of both ViViT and ConvNeXT models
-- Patient-level and image-level prediction capabilities
-- Comprehensive evaluation metrics (accuracy, precision, recall)
-- Integration with Weights & Biases (wandb) for experiment tracking
-- Confusion matrix visualization for model performance analysis
-
-## Requirements
-
-- Python
-- PyTorch
-- Transformers library
-- pandas
-- numpy
-- wandb (for experiment tracking)
-- evaluate (for metrics computation)
+- ConvNeXT: Analyses individual images and aggregates results for patient-level diagnosis.
 
 ## Project Structure
 
 ```
-├── .devcontainer/          # Development container configuration
-│   ├── Dockerfile          # Custom LaTeX environment
-│   └── devcontainer.json   # VS Code container settings
-├── latex/                  # LaTeX source files for research paper
-│   ├── main.tex           # Main document
-│   ├── configuration.tex  # Package imports and settings
-│   ├── sections/          # Paper sections
-│   ├── references/        # Bibliography files (.bib)
-│   └── imgs/              # Figures and images
-├── pyproject.toml          # Python project configuration and dependencies
-├── config.py               # Configuration parameters and constants
-├── preview_from_pixels_to_diagnosis_using_machine_learning_to_classify_medical_image_sequences.pdf  # Research paper preview
-├── clean.py                # Dataset preprocessing and organization
-├── vivit_data_handling.py  # Dataset preprocessing for the vivit model
-├── convnext_data_handling.py  # Dataset preprocessing for convnext model
-├── vivit_experiment.py     # ViViT model implementation and training
-├── convnext_experiment.py  # ConvNeXT model implementation and training
-├── logging_and_model_evaluation.py # Evaluation metrics and logging utilities
-├── convnext_metrics_new/  # ConvNeXT model results
-├── vivit_metrics_new/     # ViViT model results
-└── dataset/                # Directory containing the medical image data
+├── src/                       # Python source code
+│   ├── config.py              # Configuration parameters and constants
+│   ├── clean.py               # Dataset preprocessing and organisation
+│   ├── convert_nifti_to_jpg.py # NIfTI to JPG conversion
+│   ├── image_processing.py    # Image loading and sampling utilities
+│   ├── vivit.py               # ViViT model initialisation
+│   ├── vivit_data_handling.py # ViViT dataset preprocessing
+│   ├── vivit_experiment.py    # ViViT training and evaluation
+│   ├── convnext.py            # ConvNeXT model initialisation
+│   ├── convnext_data_handling.py # ConvNeXT dataset preprocessing
+│   ├── convnext_experiment.py # ConvNeXT training and evaluation
+│   └── logging_and_model_evaluation.py # Metrics and logging
+├── notebooks/                 # Jupyter notebooks
+│   ├── analysis.ipynb         # Results analysis
+│   ├── analysis_latex.ipynb   # LaTeX-formatted analysis
+│   └── eda.ipynb              # Exploratory data analysis
+├── data/                      # Experiment results
+│   ├── convnext_metrics_new/  # ConvNeXT metrics per run
+│   ├── vivit_metrics_new/     # ViViT metrics per run
+│   └── wandb_experiment_data.csv # Exported wandb data
+├── paper/                     # LaTeX source for research paper
+│   ├── main.tex               # Main document
+│   ├── configuration.tex      # Package imports and settings
+│   ├── sections/              # Paper sections
+│   ├── references/            # Bibliography files (.bib)
+│   └── imgs/                  # Figures and images
+├── .devcontainer/             # Dev container configuration
+├── pyproject.toml             # Python dependencies
+├── uv.lock                    # Dependency lock file
+├── reviewer_response.md       # Reviewer response document
+├── README.md
+└── LICENSE
 ```
 
 ## ML Setup and Usage
@@ -87,50 +78,31 @@ This repository contains implementations of two deep learning approaches for hem
 
 1. **Install uv** (if not already installed):
    ```bash
-   # On macOS and Linux
    curl -LsSf https://astral.sh/uv/install.sh | sh
-   
-   # On Windows
-   powershell -c "irm https://astral.sh/uv/install.ps1 | iex"
-   
-   # Or with pip
-   pip install uv
    ```
 
-2. **Install dependencies** using uv and pyproject.toml:
+2. **Install dependencies:**
    ```bash
    uv sync
    ```
 
 3. **Prepare your dataset:**
    ```bash
-   uv run clean.py
+   uv run src/clean.py
    ```
 
 4. **Run experiments:**
-   
-   Make sure you have a `key.py` file with your wandb API key and that you changed the project name in the `config.py` file. Then:
-   
+
+   Make sure you have a `src/key.py` file with your wandb API key and that you changed the project name in `src/config.py`. Then:
+
    - For ViViT model:
      ```bash
-     uv run vivit_experiment.py
+     uv run src/vivit_experiment.py
      ```
    - For ConvNeXT model:
      ```bash
-     uv run convnext_experiment.py
+     uv run src/convnext_experiment.py
      ```
-
-### Adding New Dependencies
-
-To add new packages to the project:
-```bash
-uv add <package-name>
-```
-
-To add development dependencies:
-```bash
-uv add --dev <package-name>
-```
 
 ## Model Configuration
 
@@ -138,61 +110,22 @@ The project uses the following pre-trained models:
 - ViViT: `google/vivit-b-16x2-kinetics400`
 - ConvNeXT: `facebook/convnext-tiny-224`
 
-## 📝 LaTeX Paper Compilation
+## Paper Compilation
 
-### Manual Setup (Advanced Users)
+### Manual Setup
 
-If you prefer not to use Dev Containers, you can set up LaTeX manually:
-
-#### Installing TeX Live
-
-**Ubuntu/Debian:**
-```bash
-sudo apt update
-sudo apt install texlive-full
-```
-
-**macOS:**
-```bash
-# Using MacTeX (recommended)
-brew install --cask mactex
-```
-
-**Windows:**
-Download and install [MiKTeX](https://miktex.org/) or [TeX Live](https://www.tug.org/texlive/)
-
-#### Required LaTeX Packages
+If you prefer not to use Dev Containers:
 
 ```bash
-tlmgr install cite fancyvrb ieeetran paralist csvsimple titlesec soul \
-              markdown adjustbox booktabs multirow pgfplots float natbib \
-              times psnfss xcolor hyperref graphicx amsmath amsfonts amssymb
-```
-
-#### Compilation Commands
-
-```bash
-cd latex
+cd paper
 latexmk -pdf main.tex
 ```
 
-### Troubleshooting LaTeX
-
-**Missing packages:**
+Or with Docker:
 ```bash
-tlmgr install <package-name>
+docker build -t latex-env .devcontainer/
+docker run --rm -v $(pwd)/paper:/workspace latex-env latexmk -pdf main.tex
 ```
-
-**Font errors:**
-```bash
-updmap-sys && texhash
-```
-
-**Clean build files:**
-```bash
-latexmk -C
-```
-
 
 ## License
 
@@ -203,4 +136,3 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 - Enrique Vilchez-Lizano
 - Kenneth Villalobos-Solis
 - Brandon Mora-Umaña
-
