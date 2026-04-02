@@ -4,6 +4,7 @@ env.yml
 wandb/*
 key.py
 .env
+physionet.org/
 model
 __pycache__/*
 saved_dataset_mini/*
