@@ -27,7 +27,6 @@ We explore how effective video models can be at classifying patients based on a 
 │   ├── convnext_metrics_new/  # ConvNeXT metrics per run
 │   ├── vivit_metrics_new/     # ViViT metrics per run
 │   └── wandb_experiment_data.csv # Exported wandb data
-├── .devcontainer/             # Dev container configuration
 ├── pyproject.toml             # Python dependencies
 ├── uv.lock                    # Dependency lock file
 ├── README.md
