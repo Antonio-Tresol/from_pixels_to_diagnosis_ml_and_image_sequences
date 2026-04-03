@@ -1,0 +1,418 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>From Pixels to Diagnosis</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            background: #0f0f0f;
+            color: #e0e0e0;
+            font-family: 'Georgia', 'Times New Roman', serif;
+            line-height: 1.7;
+            font-size: 18px;
+        }
+
+        .container {
+            max-width: 720px;
+            margin: 0 auto;
+            padding: 0 24px;
+        }
+
+        header {
+            padding: 60px 0 40px;
+            border-bottom: 1px solid #2a2a2a;
+        }
+
+        .date {
+            font-family: 'Helvetica Neue', Arial, sans-serif;
+            font-size: 14px;
+            color: #888;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 20px;
+        }
+
+        h1 {
+            font-size: 42px;
+            line-height: 1.2;
+            font-weight: 400;
+            color: #fff;
+            margin-bottom: 24px;
+        }
+
+        .authors {
+            font-family: 'Helvetica Neue', Arial, sans-serif;
+            font-size: 15px;
+            color: #999;
+            margin-bottom: 12px;
+        }
+
+        .affiliation {
+            font-family: 'Helvetica Neue', Arial, sans-serif;
+            font-size: 13px;
+            color: #666;
+        }
+
+        .links {
+            margin-top: 28px;
+            display: flex;
+            gap: 16px;
+        }
+
+        .links a {
+            font-family: 'Helvetica Neue', Arial, sans-serif;
+            font-size: 14px;
+            color: #0f0f0f;
+            background: #e0e0e0;
+            padding: 10px 20px;
+            border-radius: 6px;
+            text-decoration: none;
+            font-weight: 500;
+            transition: background 0.2s;
+        }
+
+        .links a:hover { background: #fff; }
+
+        .links a.secondary {
+            background: transparent;
+            color: #e0e0e0;
+            border: 1px solid #444;
+        }
+
+        .links a.secondary:hover {
+            border-color: #888;
+        }
+
+        section {
+            padding: 48px 0;
+            border-bottom: 1px solid #1a1a1a;
+        }
+
+        section:last-of-type { border-bottom: none; }
+
+        h2 {
+            font-size: 28px;
+            font-weight: 400;
+            color: #fff;
+            margin-bottom: 20px;
+        }
+
+        p { margin-bottom: 18px; color: #ccc; }
+
+        .highlight {
+            background: #1a1a1a;
+            border-left: 3px solid #e0e0e0;
+            padding: 24px 28px;
+            margin: 32px 0;
+            border-radius: 0 8px 8px 0;
+        }
+
+        .highlight p { margin-bottom: 0; color: #ddd; }
+
+        .metric-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin: 32px 0;
+        }
+
+        .metric-card {
+            background: #1a1a1a;
+            border-radius: 12px;
+            padding: 28px;
+        }
+
+        .metric-card .model {
+            font-family: 'Helvetica Neue', Arial, sans-serif;
+            font-size: 13px;
+            color: #888;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 16px;
+        }
+
+        .metric-card .value {
+            font-size: 48px;
+            font-weight: 300;
+            color: #fff;
+            margin-bottom: 4px;
+        }
+
+        .metric-card .label {
+            font-family: 'Helvetica Neue', Arial, sans-serif;
+            font-size: 14px;
+            color: #888;
+        }
+
+        .metric-row {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 12px;
+            padding-top: 12px;
+            border-top: 1px solid #2a2a2a;
+        }
+
+        .metric-row .item {
+            text-align: center;
+        }
+
+        .metric-row .num {
+            font-size: 22px;
+            color: #fff;
+            display: block;
+        }
+
+        .metric-row .lbl {
+            font-family: 'Helvetica Neue', Arial, sans-serif;
+            font-size: 12px;
+            color: #666;
+        }
+
+        .comparison-table {
+            width: 100%;
+            margin: 32px 0;
+            border-collapse: collapse;
+            font-family: 'Helvetica Neue', Arial, sans-serif;
+            font-size: 15px;
+        }
+
+        .comparison-table th {
+            text-align: left;
+            padding: 12px 16px;
+            color: #888;
+            font-weight: 400;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            border-bottom: 1px solid #2a2a2a;
+        }
+
+        .comparison-table td {
+            padding: 14px 16px;
+            color: #ccc;
+            border-bottom: 1px solid #1a1a1a;
+        }
+
+        .comparison-table tr td:first-child { color: #fff; font-weight: 500; }
+
+        .winner { color: #7ecf7e !important; }
+
+        .bar-chart {
+            margin: 32px 0;
+        }
+
+        .bar-row {
+            display: flex;
+            align-items: center;
+            margin-bottom: 12px;
+            font-family: 'Helvetica Neue', Arial, sans-serif;
+            font-size: 14px;
+        }
+
+        .bar-label {
+            width: 100px;
+            color: #999;
+            flex-shrink: 0;
+        }
+
+        .bar-track {
+            flex: 1;
+            height: 28px;
+            background: #1a1a1a;
+            border-radius: 4px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .bar-fill {
+            height: 100%;
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            padding-left: 10px;
+            font-size: 13px;
+            color: #fff;
+            font-weight: 500;
+        }
+
+        .bar-fill.vivit { background: #4a7c59; }
+        .bar-fill.convnext { background: #7c4a4a; }
+
+        .insight {
+            font-style: italic;
+            color: #aaa;
+            font-size: 17px;
+            margin: 24px 0;
+        }
+
+        ul {
+            margin: 16px 0 16px 24px;
+            color: #ccc;
+        }
+
+        li { margin-bottom: 8px; }
+
+        code {
+            font-family: 'SF Mono', 'Fira Code', monospace;
+            background: #1a1a1a;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-size: 15px;
+            color: #ddd;
+        }
+
+        footer {
+            padding: 48px 0;
+            text-align: center;
+            font-family: 'Helvetica Neue', Arial, sans-serif;
+            font-size: 14px;
+            color: #555;
+        }
+
+        footer a { color: #888; text-decoration: none; }
+        footer a:hover { color: #ccc; }
+
+        @media (max-width: 600px) {
+            h1 { font-size: 28px; }
+            .metric-grid { grid-template-columns: 1fr; }
+            .links { flex-direction: column; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <div class="date">JoCICI 2026</div>
+            <h1>From Pixels to Diagnosis: Using Machine Learning to Classify Medical Image Sequences</h1>
+            <div class="authors">Antonio Badilla-Olivas, Enrique Vilchez-Lizano, Brandon Mora-Uma&ntilde;a, Kenneth Villalobos-Sol&iacute;s, Adri&aacute;n Lara Petitdemange</div>
+            <div class="affiliation">Universidad de Costa Rica &middot; Escuela de Ciencias de la Computaci&oacute;n e Inform&aacute;tica</div>
+            <div class="links">
+                <a href="https://github.com/Antonio-Tresol/from_pixels_to_diagnosis_ml_and_image_sequences">View code</a>
+                <a href="https://physionet.org/content/ct-ich/1.3.1/" class="secondary">Dataset</a>
+            </div>
+        </header>
+
+        <section>
+            <h2>The question</h2>
+            <p>When a patient arrives with a traumatic brain injury, clinicians rely on CT scans to detect intracranial hemorrhage. Each scan produces around 30 slices. A radiologist reads them as a sequence. Can machine learning do the same?</p>
+            <p>We wanted to test a specific idea: does treating CT slices as a video sequence (rather than individual images) improve classification? And if so, why?</p>
+        </section>
+
+        <section>
+            <h2>Two approaches</h2>
+            <p>We compared two models on the same 82 patients from the <a href="https://physionet.org/content/ct-ich/1.3.1/" style="color:#aaa">CT-ICH dataset</a>, 36 with hemorrhage and 46 without.</p>
+
+            <div class="metric-grid">
+                <div class="metric-card">
+                    <div class="model">ViViT</div>
+                    <div class="value">72%</div>
+                    <div class="label">Mean accuracy</div>
+                    <div class="metric-row">
+                        <div class="item"><span class="num">73%</span><span class="lbl">Precision</span></div>
+                        <div class="item"><span class="num">62%</span><span class="lbl">Recall</span></div>
+                    </div>
+                </div>
+                <div class="metric-card">
+                    <div class="model">ConvNeXT</div>
+                    <div class="value">60%</div>
+                    <div class="label">Mean accuracy</div>
+                    <div class="metric-row">
+                        <div class="item"><span class="num">67%</span><span class="lbl">Precision</span></div>
+                        <div class="item"><span class="num">13%</span><span class="lbl">Recall</span></div>
+                    </div>
+                </div>
+            </div>
+
+            <p><strong>ViViT</strong> is a video vision transformer. It takes 18 CT slices as a single sequence and outputs one prediction per patient. It sees the data at the patient level, where the class balance is roughly 1:1.1.</p>
+            <p><strong>ConvNeXT</strong> is a convolutional image model. It classifies each slice independently, then applies a voting rule: if any slice is positive, the patient is positive. It sees the data at the slice level, where approximately 90% of samples are negative.</p>
+        </section>
+
+        <section>
+            <h2>The imbalance problem</h2>
+            <p>This is the core finding. The two models don't just differ in architecture. They face fundamentally different training distributions from the same data.</p>
+
+            <div class="bar-chart">
+                <div class="bar-row">
+                    <span class="bar-label">ViViT</span>
+                    <div class="bar-track">
+                        <div class="bar-fill vivit" style="width: 48%;">48% positive</div>
+                    </div>
+                </div>
+                <div class="bar-row">
+                    <span class="bar-label">ConvNeXT</span>
+                    <div class="bar-track">
+                        <div class="bar-fill convnext" style="width: 10%;">~10%</div>
+                    </div>
+                </div>
+            </div>
+
+            <p>ConvNeXT sees roughly 2,800 individual slices, 90% of which are negative. It learns to predict "no hemorrhage" almost every time. High accuracy, terrible recall. ViViT sees 75 patient-level sequences with near-balanced classes. It actually learns to detect hemorrhage.</p>
+
+            <div class="highlight">
+                <p>This imbalance is not a flaw in the experiment. It is what happens when you force an image model to process sequential data. The decomposition into individual frames creates the skew.</p>
+            </div>
+        </section>
+
+        <section>
+            <h2>Results at a glance</h2>
+
+            <table class="comparison-table">
+                <thead>
+                    <tr><th>Metric</th><th>ViViT</th><th>ConvNeXT</th><th>Significant?</th></tr>
+                </thead>
+                <tbody>
+                    <tr><td>Accuracy</td><td class="winner">0.72</td><td>0.60</td><td>Yes (p &lt; 0.001)</td></tr>
+                    <tr><td>Recall</td><td class="winner">0.62</td><td>0.13</td><td>Yes (p &lt; 0.001)</td></tr>
+                    <tr><td>Precision</td><td>0.73</td><td>0.67</td><td>No (p = 0.68)</td></tr>
+                </tbody>
+            </table>
+
+            <p>ViViT produced less than half the false negatives of ConvNeXT and detected positive cases more than four times as often. In a medical context, where a missed hemorrhage can be fatal, this matters.</p>
+        </section>
+
+        <section>
+            <h2>Computational cost</h2>
+
+            <table class="comparison-table">
+                <thead>
+                    <tr><th>Model</th><th>Parameters</th><th>Train time/run</th><th>Throughput</th></tr>
+                </thead>
+                <tbody>
+                    <tr><td>ViViT</td><td>87.6M</td><td>~39 min</td><td>0.49 samples/sec</td></tr>
+                    <tr><td>ConvNeXT</td><td>27.8M</td><td>~42 min</td><td>8.6 samples/sec</td></tr>
+                </tbody>
+            </table>
+
+            <p>ViViT is a larger model with lower throughput (it processes full sequences), but total training time is comparable. Both were trained on a Tesla V100S with 10 replicates of 20 epochs each.</p>
+        </section>
+
+        <section>
+            <h2>Limitations</h2>
+            <ul>
+                <li>82 patients from a single hospital. Results may not generalise.</li>
+                <li>One architecture per model category. We can't claim all video models beat all image models.</li>
+                <li>No class-balancing techniques were applied. This was deliberate (we wanted to compare paradigms under natural conditions), but it means ConvNeXT was at a disadvantage.</li>
+                <li>Binary classification only. The dataset has hemorrhage subtype labels that we did not use.</li>
+            </ul>
+        </section>
+
+        <section>
+            <h2>What comes next</h2>
+            <p>Several directions are worth exploring:</p>
+            <ul>
+                <li>Do class-balancing techniques (oversampling, augmentation, weighted loss) close the gap? If so, the advantage is about class distribution, not architecture.</li>
+                <li>How do other video models and multi-view models compare?</li>
+                <li>Can these models handle multiclass hemorrhage subtype classification?</li>
+                <li>Larger, multi-site datasets would test generalisability.</li>
+            </ul>
+        </section>
+    </div>
+
+    <footer>
+        <p><a href="https://github.com/Antonio-Tresol/from_pixels_to_diagnosis_ml_and_image_sequences">GitHub</a> &middot; Universidad de Costa Rica &middot; JoCICI 2026</p>
+    </footer>
+</body>
+</html>
