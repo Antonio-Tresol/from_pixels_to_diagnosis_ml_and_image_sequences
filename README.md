@@ -1,6 +1,6 @@
 # From Pixels to Diagnosis: ML and Image Sequences
 
-**TL;DR:** We compared a video model (ViViT) against an image model (ConvNeXT) for detecting intracranial hemorrhage from CT scan sequences. ViViT won (72% accuracy, 62% recall vs 60% accuracy, 13% recall). The image model struggles because decomposing sequences into individual slices creates a heavily imbalanced training set (~90% negative). Video models avoid this by processing the whole sequence at once.
+**TL;DR:** We compared a video model (ViViT) against an image model (ConvNeXT) for detecting intracranial hemorrhage from CT scan sequences. ViViT won (72% accuracy, 62% recall vs 60% accuracy, 13% recall). The image model struggles because decomposing sequences into individual slices creates a heavily imbalanced training set (~90% negative). Video models avoid this by consuming the whole sequence at once, which also lets them pick up on temporal and spatial patterns across slices.
 
 We explore how effective video models can be at classifying patients based on a sequence of medical images, using the [CT-ICH dataset](https://physionet.org/content/ct-ich/1.3.1/) (82 patients, 36 with hemorrhage).
 
