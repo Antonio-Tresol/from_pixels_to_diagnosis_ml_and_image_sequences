@@ -1,34 +1,8 @@
 # From Pixels to Diagnosis: ML and Image Sequences
 
-In this project, we focused on intracranial hemorrhage diagnosis using medical image sequences through state-of-the-art vision models (ViViT and ConvNeXT). We explore how effective video models can be at classifying patients based on a sequence of images.
+**TL;DR:** We compared a video model (ViViT) against an image model (ConvNeXT) for detecting intracranial hemorrhage from CT scan sequences. ViViT won (72% accuracy, 62% recall vs 60% accuracy, 13% recall). The image model struggles because decomposing sequences into individual slices creates a heavily imbalanced training set (~90% negative). Video models avoid this by processing the whole sequence at once.
 
-## Quick Start
-
-### For Machine Learning Experiments
-Follow the [ML Setup](#ml-setup-and-usage) section below.
-
-### For LaTeX Paper Compilation (Recommended: Dev Container)
-The easiest way to compile the research paper is using VS Code Dev Containers:
-
-**Prerequisites:**
-- [Docker](https://docs.docker.com/get-docker/)
-- [Visual Studio Code](https://code.visualstudio.com/)
-- [Dev Containers extension](https://marketplace.visualstudio.com/items?itemName=ms-vscode-remote.remote-containers)
-
-**Setup:**
-1. Open this repository in VS Code
-2. Click "Reopen in Container" when prompted (or press `F1` -> "Dev Containers: Reopen in Container")
-3. Wait for the container to build (5-10 minutes first time)
-4. Compile: `cd paper && latexmk -pdf main.tex`
-
-The compiled PDF will be at `paper/main.pdf`.
-
-## Project Overview
-
-This repository contains implementations of two deep learning approaches for hemorrhage diagnosis:
-
-- ViViT (Video Vision Transformer): Processes sequences of medical images to make predictions.
-- ConvNeXT: Analyses individual images and aggregates results for patient-level diagnosis.
+We explore how effective video models can be at classifying patients based on a sequence of medical images, using the [CT-ICH dataset](https://physionet.org/content/ct-ich/1.3.1/) (82 patients, 36 with hemorrhage).
 
 ## Project Structure
 
@@ -53,21 +27,14 @@ This repository contains implementations of two deep learning approaches for hem
 │   ├── convnext_metrics_new/  # ConvNeXT metrics per run
 │   ├── vivit_metrics_new/     # ViViT metrics per run
 │   └── wandb_experiment_data.csv # Exported wandb data
-├── paper/                     # LaTeX source for research paper
-│   ├── main.tex               # Main document
-│   ├── configuration.tex      # Package imports and settings
-│   ├── sections/              # Paper sections
-│   ├── references/            # Bibliography files (.bib)
-│   └── imgs/                  # Figures and images
 ├── .devcontainer/             # Dev container configuration
 ├── pyproject.toml             # Python dependencies
 ├── uv.lock                    # Dependency lock file
-├── reviewer_response.md       # Reviewer response document
 ├── README.md
 └── LICENSE
 ```
 
-## ML Setup and Usage
+## Setup and Usage
 
 ### Prerequisites
 
@@ -86,46 +53,48 @@ This repository contains implementations of two deep learning approaches for hem
    uv sync
    ```
 
-3. **Prepare your dataset:**
+3. **Download the dataset:**
+
+   The dataset is [Computed Tomography Images for Intracranial Hemorrhage Detection and Segmentation](https://physionet.org/content/ct-ich/1.3.1/) from PhysioNet. You need to sign the Restricted Health Data Use Agreement, then download:
+
    ```bash
+   wget -r -N -c -np --user YOUR_USERNAME --ask-password https://physionet.org/files/ct-ich/1.3.1/
+   ```
+
+4. **Convert and prepare the dataset:**
+
+   The download contains NIfTI files. Convert them to JPGs and generate the required CSVs:
+
+   ```bash
+   uv run src/convert_nifti_to_jpg.py
    uv run src/clean.py
    ```
 
-4. **Run experiments:**
+   This creates the `dataset/` folder with `Positives/` and `Negatives/` patient directories.
 
-   Make sure you have a `src/key.py` file with your wandb API key and that you changed the project name in `src/config.py`. Then:
+5. **Run experiments:**
 
-   - For ViViT model:
-     ```bash
-     uv run src/vivit_experiment.py
-     ```
-   - For ConvNeXT model:
-     ```bash
-     uv run src/convnext_experiment.py
-     ```
+   Create a `src/key.py` file with your [Weights & Biases](https://wandb.ai) API key:
+
+   ```python
+   WANDB_KEY = "your_key_here"
+   ```
+
+   ```bash
+   # ViViT (video model)
+   uv run src/vivit_experiment.py
+
+   # ConvNeXT (image model)
+   uv run src/convnext_experiment.py
+   ```
+
+   Results are saved to `data/vivit_metrics_new/` and `data/convnext_metrics_new/`.
 
 ## Model Configuration
 
 The project uses the following pre-trained models:
 - ViViT: `google/vivit-b-16x2-kinetics400`
 - ConvNeXT: `facebook/convnext-tiny-224`
-
-## Paper Compilation
-
-### Manual Setup
-
-If you prefer not to use Dev Containers:
-
-```bash
-cd paper
-latexmk -pdf main.tex
-```
-
-Or with Docker:
-```bash
-docker build -t latex-env .devcontainer/
-docker run --rm -v $(pwd)/paper:/workspace latex-env latexmk -pdf main.tex
-```
 
 ## License
 
